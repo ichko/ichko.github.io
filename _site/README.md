@@ -1,3 +1,0 @@
-# IZ
-
-Hello world

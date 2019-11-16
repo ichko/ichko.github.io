@@ -26,7 +26,7 @@ categories: jekyll update
   });
 </script>
 
-Recently, I discovered [blog.otoro.net](http://blog.otoro.net/) - David Ha's blog and I was delighted to sell all kinds of creative applications of deep learning technics.
+Recently, I discovered [blog.otoro.net](http://blog.otoro.net/) - David Ha's blog and I was delighted to see all kinds of creative applications of deep learning technics.
 In this post I will attempt to replicate and build on top of [his work](http://blog.otoro.net/2016/03/25/generating-abstract-patterns-with-tensorflow/) on [CPPNs](https://en.wikipedia.org/wiki/Compositional_pattern-producing_network).
 I will be building my art generating networks in [TensorFlow.js](https://www.tensorflow.org/js), since I've been needing an excuse to try it out in a long time.
 
