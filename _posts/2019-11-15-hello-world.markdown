@@ -43,15 +43,15 @@ Well, in the current post I would not be doing anything related to genetic algor
 
 What the network is actually going to do is take a discrete 2D vector field (mesh grid) and map it to the 3D space of colors. Since the input mesh grid will be somewhat smooth as viewed in a 2D matrix and because the neural network is [continuous function](https://en.wikipedia.org/wiki/Continuous_function), we would expect the results to resemble radom, but smooth transitions between colors. In a sense the neural network would act as a `fragment shader` just like the one you have in [Shadertoy](http://shadertoy.com). Taking in the `uv` coordinates of the pixels and mapping them to colors.
 
-Since the network would not be trained the output would depend on the random initialization of all the parameters of the network. Later in the post we would extend this by adding a latent vector as an input and explore the idea of mapping the pixels of and existing image to new colors, which I would call `color to color` mapping.
+Since the network would not be trained the output would depend on the random initialization of all the parameters of the network. Later in the post we would extend this by adding a latent vector as an input which would vary the generated image as it is interpolated. This latent vector would be the same for all the pixels at a current time step.
 
 
 # TODO
  - ~~Explain CPPN's~~
  - ~~Explain why the output is structured - smoothness~~
  - ~~Relation to shaders~~
- - Maragoni effect
+ - ~~Maragoni effect~~ (do not add)
  - Examples
- - Transformations of pixel data (color to color)
+ - Transformations of pixel data (color as input to the generated pixel)
  - Transformations of uv map
  - Latent variable interpolation gifs with the ideas on top
