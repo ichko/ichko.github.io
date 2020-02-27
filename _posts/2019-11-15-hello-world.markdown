@@ -5,32 +5,16 @@ date:   2019-11-15 21:39:01 +0200
 categories: jekyll update
 image: /assets/cppn/0_colorful_out.png
 ---
-<!-- <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.0.0/dist/tf.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.9.0/p5.min.js"></script>
-
-<script>
-  // Define a model for linear regression.
-  const model = tf.sequential();
-  model.add(tf.layers.dense({units: 1, inputShape: [1]}));
-
-  model.compile({ loss: 'meanSquaredError', optimizer: 'sgd' });
-
-  // Generate some synthetic data for training.
-  const xs = tf.tensor2d([1, 2, 3, 4], [4, 1]);
-  const ys = tf.tensor2d([1, 3, 5, 7], [4, 1]);
-
-  // Train the model using the data.
-  model.fit(xs, ys, {epochs: 10}).then(() => {
-    // Use the model to do inference on a data point the model hasn't seen before:
-    model.predict(tf.tensor2d([5], [1, 1])).print();
-    // Open the browser devtools to see the output
-  });
-</script> -->
 
 ![colorful output from the cppn](/assets/cppn/1_cool_fire.png)
 
-Recently, I discovered [blog.otoro.net](http://blog.otoro.net/) - David Ha's blog and I was delighted to see all kinds of creative applications of deep learning technics.
-In this post I will attempt to replicate and build on top of [his work](http://blog.otoro.net/2016/03/25/generating-abstract-patterns-with-tensorflow/) on [CPPNs](https://en.wikipedia.org/wiki/Compositional_pattern-producing_network). As this post is heavily inspired by the articles of the blog mentioned above I strongly recommend that you read them as well.
+Recently, I discovered [blog.otoro.net](http://blog.otoro.net/) - David Ha's blog
+and I was delighted to see all kinds of creative applications of deep learning technics.
+In this post I will attempt to replicate and build on top of 
+[his work](http://blog.otoro.net/2016/03/25/generating-abstract-patterns-with-tensorflow/) on
+[CPPNs](https://en.wikipedia.org/wiki/Compositional_pattern-producing_network).
+As this post is heavily inspired by the articles of the blog mentioned above
+I strongly recommend that you read them as well.
 
 ## What is CPPN
 
@@ -39,18 +23,29 @@ According to Wikipedia that is:
 
 > ANNs that have an architecture whose evolution is guided by genetic algorithms.
 
-Well, in the current post I would not be doing anything related to genetic algorithms. The architecture of the networks would not be evolving and neither is the topology of the computation be anything more than a vanilla feed forward network as the FFN would be enough to produce interestingly looking results.
+Well, in the current post I would not be doing anything related to genetic algorithms.
+The architecture of the networks would not be evolving and neither is the topology
+of the computation be anything more than a vanilla feed forward network
+as the FFN would be enough to produce interestingly looking results.
 
-What the network is actually going to do is take a discrete 2D vector field (mesh grid) and map it to the 3D space of colors. Since the input mesh grid will be somewhat smooth as viewed in a 2D matrix and because the neural network is [continuous function](https://en.wikipedia.org/wiki/Continuous_function), we would expect the results to resemble radom, but smooth transitions between colors. In a sense the neural network would act as a `fragment shader` just like the one you have in [Shadertoy](http://shadertoy.com). Taking in the `uv` coordinates of the pixels and mapping them to colors.
+What the network is actually going to do is take a discrete 2D vector field
+(mesh grid) and map it to the 3D space of colors.
+Since the input mesh grid will be somewhat smooth as viewed in a 2D matrix
+and because the neural network is [continuous function](https://en.wikipedia.org/wiki/Continuous_function),
+we would expect the results to resemble radom, but smooth transitions between colors.
+In a sense the neural network would act as a `fragment shader`
+just like the one you have in [Shadertoy](http://shadertoy.com).
+Taking in the `uv` coordinates of the pixels and mapping them to colors.
 
-Since the network would not be trained the output would depend on the random initialization of all the parameters of the network. Later in the post we would extend this by adding a latent vector as an input which would vary the generated image as it is interpolated. This latent vector would be the same for all the pixels at a current time step.
+Since the network would not be trained the output would depend on the random
+initialization of all the parameters of the network hence - generating random 'art'.
+We would extend this by adding a random (latent) vector as an input which would vary the generated image.
+The vector would be fixed for the pixels of a single image but varied in time leading to a smooth transitions
+in time.
+
 
 
 # TODO
- - ~~Explain CPPN's~~
- - ~~Explain why the output is structured - smoothness~~
- - ~~Relation to shaders~~
- - ~~Maragoni effect~~ (do not add)
  - Examples
  - Transformations of pixel data (color as input to the generated pixel)
  - Transformations of uv map
