@@ -19,7 +19,7 @@ I strongly recommend that you read them as well.
 ## What is CPPN
 
 First things first, what is a `Compositional Pattern Producing Network`.
-According to Wikipedia that is:
+The Wikipedia definition is as follows:
 
 > ANNs that have an architecture whose evolution is guided by genetic algorithms.
 
@@ -30,23 +30,36 @@ as the FFN would be enough to produce interestingly looking results.
 
 What the network is actually going to do is take a discrete 2D vector field
 (mesh grid) and map it to the 3D space of colors.
+
+$$
+  f: {\Bbb R}^2 \to {\Bbb R}^3
+$$
+
 Since the input mesh grid will be somewhat smooth as viewed in a 2D matrix
 and because the neural network is [continuous function](https://en.wikipedia.org/wiki/Continuous_function),
 we would expect the results to resemble radom, but smooth transitions between colors.
-In a sense the neural network would act as a `fragment shader`
-just like the one you have in [Shadertoy](http://shadertoy.com).
-Taking in the `uv` coordinates of the pixels and mapping them to colors.
+In a sense the neural network would act as a `fragment shader` just like the one you
+have in [Shadertoy](http://shadertoy.com). Taking in the `uv` coordinates of the pixels
+and mapping them to colors.
+
+$$
+  f(u, v) = \sigma(...W_2 a(W_1 \vec{uv} + b_1) + b_2...)
+$$
+
+Here $a$ is some activation function (like $tanh$ or $\sigma$) and $\sigma$ is the sigmoid function.
+We naturally activate the last layer with $\sigma$ so that we map of the output is in the range $(0, 1)$.
+
+![function mapping trough the layers](/assets/cppn/5_transition.png)
 
 Since the network would not be trained the output would depend on the random
-initialization of all the parameters of the network hence - generating random 'art'.
+initialization of all the parameters of the network hence - generating _random art_.
 We would extend this by adding a random (latent) vector as an input which would vary the generated image.
 The vector would be fixed for the pixels of a single image but varied in time leading to a smooth transitions
 in time.
 
+<video width="100%" autoplay="autoplay" loop>
+  <source src="/assets/cppn/vid_1.webm">
+  Your browser does not support the video tag.
+</video>
 
-
-# TODO
- - Examples
- - Transformations of pixel data (color as input to the generated pixel)
- - Transformations of uv map
- - Latent variable interpolation gifs with the ideas on top
+# Some examples
