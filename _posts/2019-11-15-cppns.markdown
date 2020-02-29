@@ -10,7 +10,7 @@ image: /assets/cppn/0_colorful_out.png
 
 Recently, I discovered [blog.otoro.net](http://blog.otoro.net/) - David Ha's blog
 and I was delighted to see all kinds of creative applications of deep learning technics.
-In this post I will attempt to replicate and build on top of 
+In this post, I will attempt to replicate and build on top of 
 [his work](http://blog.otoro.net/2016/03/25/generating-abstract-patterns-with-tensorflow/) on
 [CPPNs](https://en.wikipedia.org/wiki/Compositional_pattern-producing_network).
 As this post is heavily inspired by the articles of the blog mentioned above
@@ -25,11 +25,11 @@ The Wikipedia definition is as follows:
 
 Well, in the current post I would not be doing anything related to genetic algorithms.
 The architecture of the networks would not be evolving and neither is the topology
-of the computation be anything more than a vanilla feed forward network
+of the computation be anything more than a vanilla feed-forward network
 as the FFN would be enough to produce interestingly looking results.
 
-What the network is actually going to do is take a discrete 2D vector field
-(mesh grid) and map it to the 3D space of colors.
+What the network is going to do is take a discrete 2D vector field (mesh grid)
+and map it to the 3D space of colors.
 
 $$
   f: {\Bbb R}^2 \to {\Bbb R}^3
@@ -37,8 +37,8 @@ $$
 
 Since the input mesh grid will be somewhat smooth as viewed in a 2D matrix
 and because the neural network is [continuous function](https://en.wikipedia.org/wiki/Continuous_function),
-we would expect the results to resemble radom, but smooth transitions between colors.
-In a sense the neural network would act as a `fragment shader` just like the one you
+we would expect the results to resemble random, but smooth transitions between colors.
+In a sense, the neural network would act as a `fragment shader` just like the one you
 have in [Shadertoy](http://shadertoy.com). Taking in the `uv` coordinates of the pixels
 and mapping them to colors.
 
@@ -47,19 +47,94 @@ $$
 $$
 
 Here $a$ is some activation function (like $tanh$ or $\sigma$) and $\sigma$ is the sigmoid function.
-We naturally activate the last layer with $\sigma$ so that we map of the output is in the range $(0, 1)$.
+We naturally activate the last layer with $\sigma$ so that we map the output is in the range $(0, 1)$.
 
 ![function mapping trough the layers](/assets/cppn/5_transition.png)
 
 Since the network would not be trained the output would depend on the random
 initialization of all the parameters of the network hence - generating _random art_.
-We would extend this by adding a random (latent) vector as an input which would vary the generated image.
-The vector would be fixed for the pixels of a single image but varied in time leading to a smooth transitions
-in time.
+We would extend this by adding a random (latent) vector as an input which would vary
+the generated image. The vector would be fixed for the pixels of a single image but
+varied in _time_ leading to smooth transitions in time.
 
 <video width="100%" autoplay="autoplay" loop>
   <source src="/assets/cppn/vid_1.webm">
   Your browser does not support the video tag.
 </video>
 
-# Some examples
+## Implementation
+
+Let us use `pytorch` to construct the mapping. We will start by defining a function that
+will create a `Dense` layer - affine transformation followed by activation.
+
+```python
+import torch
+import torch.nn as nn
+
+def dense(i, o, a=nn.Sigmoid):
+    l = nn.Linear(i, o)
+    l.weight.data = torch.normal(0, 1, (o, i))
+    l.bias.data = torch.normal(0, 1, (o,))
+
+    return nn.Sequential(l, a())
+```
+
+After that, we can create a feed-forward network class that is defined by its
+`width` and `depth`.
+
+```python
+class FFN(nn.Module):
+    def __init__(self, width, depth):
+        super(FFN, self).__init__()
+        self.net = nn.Sequential(*[dense(
+            2 if i == 0 else width,
+            3 if i == depth - 1 else width,
+            nn.Sigmoid if i == depth - 1 else nn.Tanh
+        ) for i in range(depth)])
+
+    def forward(self, x):
+      return self.net(x)
+```
+
+That's all that we need in terms of a network. Now let's create the input.
+
+```python
+steps = 512
+l, r = 0, 1
+x = torch.arange(l, r, (r - l) / steps)
+y = torch.arange(l, r, (r - l) / steps)
+xx, yy = torch.meshgrid(x, y)
+inp = torch.stack((xx, yy), dim=-1)
+``` 
+
+`meshgrid` broadcasts the vectors to a matrix. After that we stack them
+to obtain 2D grid of 512x512 `uv` coordinates between 0 and 1.
+
+Let's continue by initializing the network. We pass the colors one by one
+by reshaping them into a `(steps*steps)x2` matrix - each color is a separate input.
+After that, we reshape the output back to `255x255x3` to get the final image.
+
+```python
+net = FFN(width=25, depth=9)
+output = net(inp.reshape(-1, 2)).detach().numpy()
+output = output.reshape(steps, steps, 3)
+output.shape
+```
+```
+>> ((512, 512, 2), (512, 512, 3))
+```
+
+And we are done! Now let us see what the random initialization gives us as output.
+
+```python
+import matplotlib.pyplot as plt
+
+plt.imshow(output)
+```
+![colorful output](/assets/cppn/6_img.png)
+
+_Looks pretty good to me!_
+
+## Variations on the theme
+
+
