@@ -2,10 +2,9 @@
  * Site header
  */
 .site-header {
-  border-top: 5px solid $brand-color;
-  border-bottom: 1px solid $grey-color-light;
+  border-top: 3px solid $brand-color;
+  border-bottom: 1px dashed #ccc;
   background: #fbfbfb;
-  min-height: $spacing-unit * 1.865;
 
   // Positioning context for the mobile navigation icon
   position: relative;

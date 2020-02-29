@@ -40,6 +40,9 @@ ul, ol, dl, figure,
   margin-bottom: $spacing-unit / 2;
 }
 
+h2 {
+  margin-top: $spacing-unit;
+}
 
 
 /**
@@ -152,6 +155,7 @@ code {
   // border: 1px solid $grey-color-light;
   border-radius: 3px;
   background-color: #eee;
+  font-size: 12pt;
 }
 
 code {
