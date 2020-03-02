@@ -27,7 +27,6 @@ Well, in the current post I would not be doing anything related to genetic algor
 The architecture of the networks would not be evolving and neither is the topology
 of the computation be anything more than a vanilla feed-forward network
 as the FFN would be enough to produce interestingly looking results.
-
 What the network is going to do is take a discrete 2D vector field (mesh grid)
 and map it to the 3D space of colors.
 
@@ -55,7 +54,7 @@ Since the network would not be trained the output would depend on the random
 initialization of all the parameters of the network hence - generating _random art_.
 We would extend this by adding a random (latent) vector as an input which would vary
 the generated image. The vector would be fixed for the pixels of a single image but
-varied in _time_ leading to smooth transitions in time.
+varied in _time_ leading to smooth animations.
 
 <video width="100%" autoplay="autoplay" loop>
   <source src="/assets/cppn/vid_1.webm">
@@ -76,8 +75,11 @@ def dense(i, o, a=nn.Sigmoid):
     l.weight.data = torch.normal(0, 1, (o, i))
     l.bias.data = torch.normal(0, 1, (o,))
 
-    return nn.Sequential(l, a())
+    return [l, a()]
 ```
+
+Notice the normal initialization. It is important for the region of space that we sample from
+namely - ${\Bbb R}^2$ around `(0, 1)`.
 
 After that, we can create a feed-forward network class that is defined by its
 `width` and `depth`.
@@ -86,11 +88,12 @@ After that, we can create a feed-forward network class that is defined by its
 class FFN(nn.Module):
     def __init__(self, width, depth):
         super(FFN, self).__init__()
-        self.net = nn.Sequential(*[dense(
-            2 if i == 0 else width,
-            3 if i == depth - 1 else width,
-            nn.Sigmoid if i == depth - 1 else nn.Tanh
-        ) for i in range(depth)])
+        self.net = nn.Sequential(*[
+            *dense(2, width, nn.Tanh),
+            *[l for _ in range(depth - 2)
+                for l in dense(width, width, nn.Tanh)],
+            *dense(width, 3, nn.Sigmoid),
+        ])
 
     def forward(self, x):
       return self.net(x)
@@ -115,8 +118,8 @@ by reshaping them into a `(steps*steps)x2` matrix - each color is a separate inp
 After that, we reshape the output back to `255x255x3` to get the final image.
 
 ```python
-net = FFN(width=25, depth=9)
-output = net(inp.reshape(-1, 2)).detach().numpy()
+model = FFN(width=25, depth=9)
+output = model(inp.reshape(-1, 2)).detach().numpy()
 output = output.reshape(steps, steps, 3)
 output.shape
 ```
@@ -137,4 +140,16 @@ _Looks pretty good to me!_
 
 ## Variations on the theme
 
+How can we spice things up.
 
+#### Animation
+
+That's all cool and all, but how can we add animation to this? Lets add another input vector $z$ of
+arbitrary size ($N$) that is constant for the whole image. Interpolating between two point
+in ${\Bbb R}^N$ and producing different images from that will yield smooth abstract animations.
+
+$$
+  f(u, v, z_t) = \sigma(...W_2 a(W_1 [\vec{uv}, \vec{z_t}] + b_1) + b_2...)
+$$
+
+Here $[.,.]$ denotes vector concatenation.
