@@ -80,6 +80,8 @@ def dense(i, o, a=nn.Sigmoid):
 
 Notice the normal initialization. It is important for the region of space that we sample from
 namely - ${\Bbb R}^2$ around `(0, 1)`.
+You can experiment sampling from different distributions, but some of them might not make sense
+for the range in question.
 
 After that, we can create a feed-forward network class that is defined by its
 `width` and `depth`.
@@ -138,18 +140,64 @@ plt.imshow(output)
 
 _Looks pretty good to me!_
 
+### Playing with the parameters
+
+![](/assets/cppn/7_img.png)
+
+![](/assets/cppn/8_img.png)
+
+![](/assets/cppn/9_img.png)
+
+![](/assets/cppn/10_img.png)
+
+These we all obtained by varying:
+
+- The width and depth parameters
+- The activations of the network at different levels
+  - $tanh$ - silky output
+  - $tan$ - sharp transitions
+  - $sin$ - frequent but smooth color change
+  - $sign$ - single color regions
+- The size of the output (1 - monochromatic, 3 - colorful)
+
 ## Variations on the theme
 
-How can we spice things up.
+That's all cool and all, but how can we spice things up.
 
 #### Animation
 
-That's all cool and all, but how can we add animation to this? Lets add another input vector $z$ of
+We can animate these mappings by adding another input vector $z$ of
 arbitrary size ($N$) that is constant for the whole image. Interpolating between two point
-in ${\Bbb R}^N$ and producing different images from that will yield smooth abstract animations.
+in ${\Bbb R}^N$ and producing different images from that will yield smooth animations.
 
 $$
   f(u, v, z_t) = \sigma(...W_2 a(W_1 [\vec{uv}, \vec{z_t}] + b_1) + b_2...)
 $$
 
-Here $[.,.]$ denotes vector concatenation.
+Here $[.,.]$ denotes vector concatenation. You can easily extend the code above to
+achieve this result or you can also look at the reference notebooks.
+As for the results, it really depends on the architecture of the network and the
+distributions that is used to seed the weights and biases.
+In general, you can expect to see something like this.
+
+<video class="center-image" autoplay="autoplay" loop>
+  <source src="/assets/cppn/vid_2.webm#z">
+  Your browser does not support the video tag.
+</video>
+<div class='fig'>
+  This was produced with network with width of 80 and depth of 8
+</div>
+
+If we vary the depth and width parameters along the x and y axis we get
+something like this.
+
+<video class="center-image" autoplay="autoplay" loop>
+  <source src="/assets/cppn/vid_3.webm#z">
+  Your browser does not support the video tag.
+</video>
+<div class='fig'>
+  The x and y axis correspond to increase in depth and with respectively.
+  For more details on the initialization please refer to the example notebooks.
+</div>
+
+### Super-sampling
