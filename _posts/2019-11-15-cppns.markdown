@@ -150,8 +150,11 @@ _Looks pretty good to me!_
 
 ![Example cppn output 4](/assets/cppn/10_img.png)
 
-These we all obtained by varying:
+![Example cppn output 5](/assets/cppn/11_img.png)
 
+![Example cppn output 6](/assets/cppn/12_img.png)
+
+These were obtained by varying:
 - The width and depth parameters
 - The activations of the network at different levels
   - $tanh$ - silky output
@@ -331,6 +334,19 @@ And as before we can add random input vector fixed for all the pixels and vary i
 
 We can make our outputs symmetrical by constructing the input as `meshgrid` from -1 to 1 and then taking the
 absolute value of the coordinates.
+
+![Example cppn symmetric output 1](/assets/cppn/symmetry_1.png)
+
+![Example cppn symmetric output 2](/assets/cppn/symmetry_2.png)
+
+![Example cppn symmetric output 3](/assets/cppn/symmetry_3.png)
+
+![Example cppn symmetric output 4](/assets/cppn/symmetry_4.png)
+
+This is the same as taking the output image and mirroring it around one or two of its axis.
+Really simple, but the generated images look mesmerizing.
+The outputs with x symmetry also remind me of of
+[Rorschach](https://en.wikipedia.org/wiki/Rorschach_test) images.
 
 ## Conclusion
 
