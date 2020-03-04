@@ -6,7 +6,7 @@ categories: jekyll update
 image: /assets/cppn/0_colorful_out.png
 ---
 
-![colorful output from the cppn](/assets/cppn/1_cool_fire.png)
+![Colorful output from the CPPN](/assets/cppn/1_cool_fire.png)
 
 Recently, I discovered [blog.otoro.net](http://blog.otoro.net/) - David Ha's blog
 and I was delighted to see all kinds of creative applications of deep learning technics.
@@ -48,7 +48,7 @@ $$
 Here $a$ is some activation function (like $tanh$ or $\sigma$) and $\sigma$ is the sigmoid function.
 We naturally activate the last layer with $\sigma$ so that we map the output is in the range $(0, 1)$.
 
-![function mapping trough the layers](/assets/cppn/5_transition.png)
+![Function mapping trough the layers](/assets/cppn/5_transition.png)
 
 Since the network would not be trained the output would depend on the random
 initialization of all the parameters of the network hence - generating _random art_.
@@ -136,19 +136,19 @@ import matplotlib.pyplot as plt
 
 plt.imshow(output)
 ```
-![colorful output](/assets/cppn/6_img.png)
+![Colorful output](/assets/cppn/6_img.png)
 
 _Looks pretty good to me!_
 
 ### Playing with the parameters
 
-![](/assets/cppn/7_img.png)
+![Example cppn output 1](/assets/cppn/7_img.png)
 
-![](/assets/cppn/8_img.png)
+![Example cppn output 2](/assets/cppn/8_img.png)
 
-![](/assets/cppn/9_img.png)
+![Example cppn output 3](/assets/cppn/9_img.png)
 
-![](/assets/cppn/10_img.png)
+![Example cppn output 4](/assets/cppn/10_img.png)
 
 These we all obtained by varying:
 
@@ -200,4 +200,147 @@ something like this.
   For more details on the initialization please refer to the example notebooks.
 </div>
 
-### Super-sampling
+#### Super-sampling
+
+Each image is represented as matrix of colors. This means that we can view our image as
+sampled from a ${\Bbb R}^2 \to {\Bbb R}^3$ function. Since all of the operations in our CPPN
+are differentiable we can train it to approximate any image with standard gradient descend.
+We can image our network as training to map the location of each pixel to the three channels of the image.
+This can be though of as simple supervised curve fitting for a 2D function.
+
+At the end of the training we can sample our network with higher (infinite) density, limited only by the
+precision of the floating point calculations. But we cannot expect much from this model.
+Since each pixel is generated considering only its location,
+plus the fact that we would train with a single image,
+the best that the network can do is to interpolate smoothly between the pixels.
+Unlike a CNN for super-resolution having some sort of semantic context (in the deeper layers)
+and inferring structure from this context our network could predict unexpected values
+between the learned pixels, only as a result of the randomness of the initialization
+and the stochasticity of the optimization procedure.
+
+Why are we doing it then? Because its **fun** and we can visualize the
+process of training, which is pretty nice looking if you ask me.
+
+<video class="center-image" autoplay="autoplay" loop>
+  <source src="/assets/cppn/starry_training_1.webm">
+  Your browser does not support the video tag.
+</video>
+<video class="center-image" autoplay="autoplay" loop>
+  <source src="/assets/cppn/starry_training_2.webm">
+  Your browser does not support the video tag.
+</video>
+<video class="center-image" autoplay="autoplay" loop>
+  <source src="/assets/cppn/starry_training_3.webm">
+  Your browser does not support the video tag.
+</video>
+<div class='fig'>
+  Trying to approximate Starry Night with increasingly complex network.
+</div>
+
+This we will do with `tensorflow`, because why not.
+
+```python
+def mk_model(depth, breadth):
+    def block(u, a):
+        return K.Sequential([
+            K.layers.Dense(
+                u,
+                activation=a,
+                kernel_initializer=tf.random_normal_initializer(0, 1),
+                bias_initializer=tf.random_normal_initializer(0, 1)
+            ),
+            K.layers.BatchNormalization(),
+        ])
+
+    model = K.Sequential([
+        K.layers.Input((2,)),
+        *[block(breadth, a='tanh') for _ in range(depth)],
+        K.layers.Dense(3, activation='sigmoid'),
+    ])
+    
+    model.compile(
+        optimizer=tf.optimizers.Adam(learning_rate=0.001),
+        loss=tf.losses.BinaryCrossentropy(label_smoothing=0),
+    )
+
+    return model
+```
+
+The model itself is really simple. Just rewritten version of what we had for `pytorch`.
+And for the training a single call to `fit` would be enough.
+
+```python
+model.fit(
+    mk_dataset(im, bs=1),
+    steps_per_epoch=64,
+    epochs=5,
+    callbacks=[on_epoch_begin(lambda: show_sample(model, 32, 32, s=2))]
+)
+```
+
+You can refer to the notebooks at the end for the full implementation and more examples.
+
+#### UV Remap
+
+Now, instead of predicting the color of the output we can predict where to remap each pixel.
+Instead of outputting color, for each location we are going to output a new 2D location
+between 0 and 1, specifying where to sample the original image from at this location in the matrix.
+
+This in graphics programming is called a uv map texture map - image each pixel of which is specifying
+position in a texture corresponding to color for the particular location.
+
+In short - we input the location of a pixel and the network tells us the location from which we
+have to sample some texture in order to obtain the color for that particular location.
+
+This can be achieved by changing the size of the output of our current model to 2.
+Then we can do something like this:
+
+```python
+uv = model(width=50, depth7).predict(im_size=(W, H))
+xx = uv[:, :, 0]
+yy = uv[:, :, 1]
+
+# Normalize the output
+norm_xx = (xx - np.min(xx)) / (np.max(xx) - np.min(xx))
+norm_yy = (yy - np.min(yy)) / (np.max(yy) - np.min(yy))
+
+texture = cv2.imread('texture.jpg')
+W, H, _ = texture.shape
+remapped_image = cv2.remap(
+  texture,
+  norm_xx * W, norm_yy * H,
+  cv2.INTER_AREA  # How to interpolate between pixels
+)
+```
+
+_For more details refer to the notebooks at the end_.
+
+![Example of how uv mapping works](/assets/cppn/uv_map.png)
+
+And as before we can add random input vector fixed for all the pixels and vary it in time.
+
+<video class="center-image" autoplay="autoplay" loop>
+  <source src="/assets/cppn/uv_map_vid.webm">
+  Your browser does not support the video tag.
+</video>
+<div class='fig'>
+  Animated uv maps of increasing complexity.
+</div>
+
+### Adding symmetry to the input
+
+We can make our outputs symmetrical by constructing the input as `meshgrid` from -1 to 1 and then taking the
+absolute value of the coordinates.
+
+## Conclusion
+
+It is really interesting to see so much variety in the output of the CPPNs.
+There a lot more things to be explored with here.
+
+- Applying this technique in a 1D setting cold probably yield structure in
+  audio - generating music 
+- The technique can be used to visualize latent vectors without 2D structure in matrix form (with 2D structure)
+- Ha also explores different optimizing procedures leading to varying results
+
+Although not very applicative these networks are really fun to play with and nd I encourage you
+to try running the models yourself with different initial conditions.
