@@ -358,5 +358,20 @@ There a lot more things to be explored with here.
 - The technique can be used to visualize latent vectors without 2D structure in matrix form (with 2D structure)
 - Ha also explores different optimizing procedures leading to varying results
 
-Although not very applicative these networks are really fun to play with and nd I encourage you
-to try running the models yourself with different initial conditions.
+Although not very applicative these models are really fun to play with, so I encourage you
+to try running the notebooks yourself with different initial conditions or even better -
+implementing everything from scratch by yourself.
+
+## Notebooks
+
+- [CPPNs Pytorch](https://colab.research.google.com/drive/1HX1E4_anf-uYBl9HFOOclYczpNZB7U4Y)
+- [CPPNs Tensorflow](https://colab.research.google.com/drive/1ttAlcDeuU3pzq95jGUpUyLQsu6SxHWl3)
+- [CPPNs](https://github.com/ichko/ml-playground/blob/master/notebooks/cppn.ipynb)
+- [Super-sampling](https://github.com/ichko/ml-playground/blob/master/notebooks/cppn_upscaling.ipynb)
+- [UV Remap](https://github.com/ichko/ml-playground/blob/master/notebooks/cppn-2-uv-map.ipynb)
+
+## References
+
+- [Generating Large Images from Latent Vectors](http://blog.otoro.net/2016/04/01/generating-large-images-from-latent-vectors/)
+- [Generating Large Images from Latent Vectors - Part Two](http://blog.otoro.net/2016/06/02/generating-large-images-from-latent-vectors-part-two/)
+- [Generating Abstract Patterns with TensorFlow](http://blog.otoro.net/2016/03/25/generating-abstract-patterns-with-tensorflow/)
