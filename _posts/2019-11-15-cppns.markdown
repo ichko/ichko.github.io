@@ -199,7 +199,7 @@ something like this.
   Your browser does not support the video tag.
 </video>
 <div class='fig'>
-  The x and y axis correspond to increase in depth and with respectively.
+  The x and y axis correspond to increase in depth and width respectively.
   For more details on the initialization please refer to the example notebooks.
 </div>
 
@@ -208,7 +208,7 @@ something like this.
 Each image is represented as matrix of colors. This means that we can view our image as
 sampled from a ${\Bbb R}^2 \to {\Bbb R}^3$ function. Since all of the operations in our CPPN
 are differentiable we can train it to approximate any image with standard gradient descend.
-We can image our network as training to map the location of each pixel to the three channels of the image.
+We can imagine our network as training to map the location of each pixel to the three channels of the image.
 This can be though of as simple supervised curve fitting for a 2D function.
 
 At the end of the training we can sample our network with higher (infinite) density, limited only by the
@@ -289,8 +289,8 @@ Now, instead of predicting the color of the output we can predict where to remap
 Instead of outputting color, for each location we are going to output a new 2D location
 between 0 and 1, specifying where to sample the original image from at this location in the matrix.
 
-This in graphics programming is called a uv map texture map - image each pixel of which is specifying
-position in a texture corresponding to color for the particular location.
+This in graphics programming is called a uv texture map - image each pixel of which is specifying
+position in a texture corresponding to color for that particular location.
 
 In short - we input the location of a pixel and the network tells us the location from which we
 have to sample some texture in order to obtain the color for that particular location.
@@ -299,7 +299,7 @@ This can be achieved by changing the size of the output of our current model to 
 Then we can do something like this:
 
 ```python
-uv = model(width=50, depth7).predict(im_size=(W, H))
+uv = model(width=50, depth=7).predict(im_size=(W, H))
 xx = uv[:, :, 0]
 yy = uv[:, :, 1]
 
@@ -351,7 +351,7 @@ The outputs with x symmetry also remind me of of
 ## Conclusion
 
 It is really interesting to see so much variety in the output of the CPPNs.
-There a lot more things to be explored with here.
+There is a lot more to be explored here:
 
 - Applying this technique in a 1D setting cold probably yield structure in
   audio - generating music 
