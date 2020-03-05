@@ -1,3 +1,3 @@
-# IZ
+# ichko.github.io
 
-Hello world
+Personal blog

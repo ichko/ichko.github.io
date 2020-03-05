@@ -9,8 +9,8 @@ image: /assets/cppn/0_colorful_out.png
 ![Colorful output from the CPPN](/assets/cppn/1_cool_fire.png)
 
 Recently, I discovered [blog.otoro.net](http://blog.otoro.net/) - David Ha's blog
-and I was delighted to see all kinds of creative applications of deep learning technics.
-In this post, I will attempt to replicate and build on top of 
+and I was delighted to see all kinds of creative applications of deep learning.
+In this post, I will attempt to replicate and build on top of
 [his work](http://blog.otoro.net/2016/03/25/generating-abstract-patterns-with-tensorflow/) on
 [CPPNs](https://en.wikipedia.org/wiki/Compositional_pattern-producing_network).
 As this post is heavily inspired by the articles of the blog mentioned above
@@ -21,7 +21,7 @@ I strongly recommend that you read them as well.
 First things first, what is a `Compositional Pattern Producing Network`.
 The Wikipedia definition is as follows:
 
-> ANNs that have an architecture whose evolution is guided by genetic algorithms.
+> Artificial neural networks that have an architecture whose evolution is guided by genetic algorithms.
 
 Well, in the current post I would not be doing anything related to genetic algorithms.
 The architecture of the networks would not be evolving and neither is the topology
@@ -110,7 +110,7 @@ x = torch.arange(l, r, (r - l) / steps)
 y = torch.arange(l, r, (r - l) / steps)
 xx, yy = torch.meshgrid(x, y)
 inp = torch.stack((xx, yy), dim=-1)
-``` 
+```
 
 `meshgrid` broadcasts the vectors to a matrix. After that we stack them
 to obtain 2D grid of 512x512 `uv` coordinates between 0 and 1.
@@ -125,6 +125,7 @@ output = model(inp.reshape(-1, 2)).detach().numpy()
 output = output.reshape(steps, steps, 3)
 output.shape
 ```
+
 ```
 >> ((512, 512, 2), (512, 512, 3))
 ```
@@ -136,6 +137,7 @@ import matplotlib.pyplot as plt
 
 plt.imshow(output)
 ```
+
 ![Colorful output](/assets/cppn/6_img.png)
 
 _Looks pretty good to me!_
@@ -155,6 +157,7 @@ _Looks pretty good to me!_
 ![Example cppn output 6](/assets/cppn/12_img.png)
 
 These were obtained by varying:
+
 - The width and depth parameters
 - The activations of the network at different levels
   - $tanh$ - silky output
@@ -260,7 +263,7 @@ def mk_model(depth, breadth):
         *[block(breadth, a='tanh') for _ in range(depth)],
         K.layers.Dense(3, activation='sigmoid'),
     ])
-    
+
     model.compile(
         optimizer=tf.optimizers.Adam(learning_rate=0.001),
         loss=tf.losses.BinaryCrossentropy(label_smoothing=0),
@@ -354,7 +357,7 @@ It is really interesting to see so much variety in the output of the CPPNs.
 There is a lot more to be explored here:
 
 - Applying this technique in a 1D setting cold probably yield structure in
-  audio - generating music 
+  audio - generating music
 - The technique can be used to visualize latent vectors without 2D structure in matrix form (with 2D structure)
 - Ha also explores different optimizing procedures leading to varying results
 
