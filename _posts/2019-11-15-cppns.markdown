@@ -348,7 +348,7 @@ absolute value of the coordinates.
 
 This is the same as taking the output image and mirroring it around one or two of its axis.
 Really simple, but the generated images look mesmerizing.
-The outputs with x symmetry also remind me of of
+Also, the outputs with $x$ symmetry are sometimes reminiscent of
 [Rorschach](https://en.wikipedia.org/wiki/Rorschach_test) images.
 
 ## Conclusion
@@ -363,7 +363,7 @@ There is a lot more to be explored here:
 
 Although not very applicative these models are really fun to play with, so I encourage you
 to try running the notebooks yourself with different initial conditions or even better -
-implementing everything from scratch by yourself.
+implementing everything from scratch.
 
 ## Notebooks
 
