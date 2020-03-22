@@ -1,0 +1,59 @@
+---
+layout: post
+title: "Deep quality estimation"
+date: 2019-11-15 21:39:01 +0200
+categories: neural networks, dqn, quality approximation
+---
+
+So recently I've been delving into **deep reinforcement learning** (RL), not because I wanted to, but
+because I kind of needed to. The thing is that I am currently working on my masters thesis,
+which is themed after **world modeling** - learning the dynamics of environments. Here by environment
+I mean any kind of **stateful simulation** (I might refer to them with the term games).
+The point of this is to learn to reconstruct the observations from an environment as much as you can.
+Note, I am not trying to make an agent good at `'solving'` the environment. I am merely trying to
+reconstruct it from what I (the model) have seen.
+
+Anyway, it turned out, as anyone might have guessed, that to learn a good representation
+of the dynamics of an environment, one must be able to explore (_visit many diverse states_) as much
+as possible. Naturally, to be able to do that, one must follow some sort of meaningful policy,
+not just blindly take random actions.
+So, yeah, I was all well and good, until I decided to use an environment for which I did not find
+(_was too lazy to_) find trained agent that can perform well in it.
+
+To be precise It might not be enough to `'solve'` the environment. Because an agent might
+exploit some sort of mechanics that yields rewards, but does not visit diverse set of states,
+which is what the model would need to be able to rollout the dynamics precisely.
+This leads to all kinds of interesting heuristics related to intrinsic motivation and to name a few:
+
+- Bayesian surprise - how much an observation change your model
+- Prediction Gain - maximize change in prediction error before and after observing a state
+- Complexity Gain - parsimonious model will increase complexity only if it discovers meaningful regularity
+- Compression Progress - Schmidhuber's untractable dream
+- Empowered agents - maximize mutual information between the agent's actions and their consequences
+
+You can learn more bout those in this presentation -
+[HDSI Unsupervised Deep Learning Tutorial - Alex Graves](https://www.youtube.com/watch?v=DSYzHPW26Ig)
+or google the terms.
+
+Having that in mind I still decided to pursue training agents that are `'good'` at the
+task at hand, since it sounds like a reasonable first step.
+
+In this post I will describe my attempts at trying to make **deep quality estimation** work. The roadblocks
+I encountered (_boy was I wrong about how quickly I can make that work_) and the lessons I learned.
+
+## Quick word about the terminology
+
+In the DQN setting we are trying to regress to the cumulative reward function from a
+particular state with a deep network. The network takes as an input observed state and
+outputs estimated values (cumulative reward onward) for each discrete action.
+This is done by collection tuples of experiences `(obs, reward, action, next_obs)` while
+playing and continuously training the network with batches of sampled experiences.
+
+While we are training we start by taking random actions and smoothly decrease our
+**randomness** (the epsilon value) by choosing more and more actions from the learned policy.
+The network can be interpreted as policy by activating the last layer with a `softmax`.
+Giving us larger probability for actions leading to greater rewards.
+
+## Resources
+
+- [DQN debugging using Open AI gym CartPole](https://adgefficiency.com/dqn-debugging/)
