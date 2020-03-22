@@ -1,9 +1,9 @@
 ---
 layout: post
-title:  "Generating random art with neural networks"
-date:   2019-11-15 21:39:01 +0200
-categories: jekyll update
-image: /assets/cppn/0_colorful_out.png
+title: "Generating random art with neural networks"
+date: 2019-11-15 21:39:01 +0200
+categories: neural networks, cppn, art
+image: /assets/cppn/1_cool_fire.png
 ---
 
 ![Colorful output from the CPPN](/assets/cppn/1_cool_fire.png)
