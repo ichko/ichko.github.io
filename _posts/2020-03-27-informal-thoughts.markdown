@@ -24,7 +24,7 @@ $$
 and you want to train a neural network to uncover the structure in the sequences -- predict
 input from output as an example.
 There are different ways, depending on the nature of the sequences, that can help you
-mode that, but one of the most universal neural network architectures one could use is
+model that, but one of the most universal neural network architectures one could use is
 some sort of recurrent neural network -- **RNN**.
 
 RNNs alow you to model data with arbitrary sequence size, which is what makes them
@@ -45,21 +45,22 @@ learn to **remember** the important parts of the input and to use them when it t
 The problem of this setup is that the process of training is **sequential by nature**.
 If you want to compute the output for time step $t$, you need to know
 the state of the network at time step $t-1$. This recursively shows us that
-to do an optimization step, passing in gradient signal from the end of the
-sequence to the beginning, one should process forward and then backward
+to do an optimization step, one should process forward and then backward
 the whole sequence, sequentially.
 
-> The biggest lesson that can be read from 70 years of AI research is that general methods that leverage computation are ultimately the most effective, and by a large margin.
+> The biggest lesson that can be read from 70 years of AI research is that
+> general methods that leverage computation are ultimately the most effective,
+> and by a large margin.
 >
 > Rich Sutton -- [The Bitter Lesson](http://www.incompleteideas.net/IncIdeas/BitterLesson.html)
 
-I've been thinking a lot about this process lately and how can we scale it up
+I've been thinking a lot about this lately and how can we scale it up
 and I came up with and interesting, by my biased opinion, way of training every
 time step in parallel. That is to say, every time step can be processed
 forward and backward independently.
 
 How can one do that if the input at every time step is dependent on the output of
-the previous time step. Well, lets say we already have that output vector, already computed
+the previous time step. Well, lets say we have that output vector, already computed
 and stored somewhere. In a way the computed state becomes trainable, embedding, parameter.
 
 $$
@@ -68,9 +69,10 @@ $$
 $$
 
 This can easily be done by associating every time transition, of every sequence,
-with unique id and then, during training, we can associate these ids with **embedding
+with two unique ids and then, during training, we can associate the input and output
+states, corresponding to these ids with **embedding
 vectors** from an embedding layer -- hence representation of the transition.
-Then the gradient signal from backprop can update these vectors.
+Then the gradient signal from backprop can update these vectors, refining them as needed.
 
 The training procedure becomes more memory heavy, but also fully parallel.
 Which is what dynamic programming algorithms are known for --
@@ -85,8 +87,8 @@ help with this problem.
 The thing that comes to mind is what the DQN optimization procedure does -- which is to
 update the target network less frequently. This would mean that we should freeze the embeddings
 for a few optimization steps, making the inputs and the outputs stationary for a while and
-accumulating the changes somewhere else, and then update. The hope is that this would stabilize
-the procedure and make the whole process converge faster.
+accumulating the gradients for the embedding layer somewhere else, and then update.
+The hope is that this would stabilize the procedure and make the whole process converge faster.
 
 In conclusion, I think the described method is quite simple, implementation-wise,
 and really promising and I hope I can try it out in the neat future.
