@@ -172,9 +172,13 @@ pre,
 code {
   @include relative-font-size(0.9375);
   // border: 1px solid $grey-color-light;
-  border-radius: 3px;
-  background-color: #eee;
+  border-radius: 1px;
+  background-color: #f3f3f3;
   font-size: 12pt;
+}
+
+.highlight {
+  box-shadow: 5px 5px 1px rgba(0, 0, 0, 0.05);
 }
 
 code {
@@ -245,7 +249,7 @@ pre {
  */
 table {
   margin-bottom: $spacing-unit;
-  width: 100%;
+  // width: 100%;
   text-align: $table-text-align;
   color: lighten($text-color, 18%);
   border-collapse: collapse;
