@@ -4,3 +4,6 @@ _site
 .jekyll-metadata
 vendor
 _site
+__pycache__
+.ipynb_checkpoints
+.vscode
