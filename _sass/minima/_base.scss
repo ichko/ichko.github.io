@@ -22,10 +22,10 @@ figure {
 }
 
 hr {
-  margin: 45px auto;
-  max-width: 300px;
+  margin: 55px auto;
+  max-width: 400px;
   border: none;
-  border-top: 3px double #e3e3e3;
+  border-top: 4px double #e6e6e6;
 }
 
 /**
@@ -122,30 +122,23 @@ h4,
 h5,
 h6 {
   font-weight: $base-font-weight;
+  font-family: 'Playfair Display', serif;
+}
+
+h1 {
+  font-weight: bold;
 }
 
 /**
  * Links
  */
 a {
-  color: $brand-color;
+  color: $secondary-color;
   text-decoration: none;
 
-  &:visited {
-    color: darken($brand-color, 15%);
-  }
-
   &:hover {
-    color: $text-color;
-    text-decoration: underline;
-  }
-
-  .social-media-list &:hover {
     text-decoration: none;
-
-    .username {
-      text-decoration: underline;
-    }
+    opacity: 0.8;
   }
 }
 

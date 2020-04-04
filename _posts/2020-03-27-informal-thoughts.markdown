@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Informal thoughts related to neural architectures"
+title: Informal thoughts related to neural architectures
 date: 2020-03-27 13:38:03 +0200
 categories:
 ---
