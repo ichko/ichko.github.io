@@ -14,7 +14,15 @@ def set_global_notebook_name():
     '''))
 
 
+def save_notebook():
+    display(Javascript('''
+        IPython.notebook.save_notebook();
+    '''))
+
+
 def post_this_notebook(notebook_path, draft=False):
+    save_notebook()
+
     full_notebook_name = notebook_path.split('/')[-1]
     notebook_name = full_notebook_name.split('.')[0]
 
@@ -28,16 +36,18 @@ def convert_notebook(notebook_path, notebook_output):
     class FilterCells(Preprocessor):
         def filter_cell(self, cell):
             cell_text = cell['source'].strip().lower()
-            return not cell_text.startswith('# exclude cell')
+            return '# exclude cell' not in cell_text
 
         def map_cell(self, cell):
             cell_text = cell['source'].strip().lower()
-            if cell_text.startswith('# exclude code'):
+            is_hidden = cell['metadata'].get('hide_input', False)
+
+            if is_hidden or '# exclude input' in cell_text:
                 cell = dict(
                     cell_type='raw',
                     metadata=cell.metadata,
                     source='\n'.join([
-                        o['text']
+                        o['data']
                         for o in cell['outputs'] if 'text' in o
                     ]),
                 )
@@ -47,8 +57,10 @@ def convert_notebook(notebook_path, notebook_output):
         def preprocess(self, nb, resources):
             global CELLS
             CELLS = nb.cells
-            nb.cells = [self.map_cell(c)
-                        for c in nb.cells if self.filter_cell(c)]
+            nb.cells = [
+                self.map_cell(c)
+                for c in nb.cells if self.filter_cell(c)
+            ]
 
             return nb, resources
 
