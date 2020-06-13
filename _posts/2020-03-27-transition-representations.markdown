@@ -1,13 +1,9 @@
 ---
 layout: post
-title: Informal thoughts related to neural architectures
-date: 2020-03-27 13:38:03 +0200
+title: Transition representations
+date: 2020-01-04 13:38:03 +0200
 categories:
 ---
-
-## Transition representations
-
-_01.04.2020_
 
 An attempt at parallelizing recurrent nets during training. This is just and idea,
 which I have not had the time to test yet.
@@ -38,7 +34,7 @@ $$
 You give the network state ($s_t$) and input ($x_t$) and it spits out the next state
 ($s_{t+1}$) and output ($y_t$).
 This looks really natural and generic. The task of the network during training is to
-learn to **remember** the important parts of the input and to use them when it they are needed.
+learn to **remember** the important parts of the input and to use them when they are needed.
 
 ---
 
@@ -78,7 +74,7 @@ The training procedure becomes more memory heavy, but also fully parallel.
 Which is what dynamic programming algorithms are known for --
 trading speed for the price of memory.
 
-The main problem I see with this is having **nonstationary** inputs and outputs. Every
+One problem I see with this is having **nonstationary** inputs and outputs. Every
 optimization step changes the inputs and the outputs -- the state vectors.
 So the optimization procedure will be trying to hit a moving target.
 This can make training unstable, as seen in DQN, but there are ways which can
@@ -90,8 +86,15 @@ for a few optimization steps, making the inputs and the outputs stationary for a
 accumulating the gradients for the embedding layer somewhere else, and then update.
 The hope is that this would stabilize the procedure and make the whole process converge faster.
 
+And now for the main problem. Having to do N updates of the weights of the RNN in order for
+some sort input in time step `t`, could influence the output of time step `t+N`.
+At the end of the day we arrived at somewhat similar problem. Having to do N, sequential,
+steps to be able to have the chance of passing signal across N time steps.
+This sounds like part of the nature of modeling sequences is doing things sequentially,
+which I guess sounds logical and expected.
+
 In conclusion, I think the described method is quite simple, implementation-wise,
-and really promising and I hope I can try it out in the neat future.
+and maybe something interesting to try out some day.
 
 <!-- ## Parallel sequence modeling
 
