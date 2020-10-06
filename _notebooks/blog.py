@@ -4,11 +4,12 @@ from nbconvert.preprocessors import Preprocessor
 
 from IPython.display import display, Javascript
 
-
 NOTEBOOK_FULL_PATH = '...'
-    
+
+
 def set_global_notebook_name():
-    display(Javascript('''
+    display(
+        Javascript('''
         var nb = IPython.notebook
         var kernel = IPython.notebook.kernel
         var command = "NOTEBOOK_FULL_PATH = '" + nb.base_url + nb.notebook_path + "'"
@@ -48,10 +49,8 @@ def convert_notebook(notebook_path, notebook_output):
                 cell = dict(
                     cell_type='raw',
                     metadata=cell.metadata,
-                    source='\n'.join([
-                        o['data']
-                        for o in cell['outputs'] if 'text' in o
-                    ]),
+                    source='\n'.join(
+                        [o['data'] for o in cell['outputs'] if 'text' in o]),
                 )
 
             return cell
@@ -60,8 +59,7 @@ def convert_notebook(notebook_path, notebook_output):
             global CELLS
             CELLS = nb.cells
             nb.cells = [
-                self.map_cell(c)
-                for c in nb.cells if self.filter_cell(c)
+                self.map_cell(c) for c in nb.cells if self.filter_cell(c)
             ]
 
             return nb, resources
@@ -92,7 +90,7 @@ def post():
         notebook_json = json.load(f)
         meta_cell = notebook_json['cells'][0]['source']
         IS_DRAFT = any('draft: true' in c.lower() for c in meta_cell)
-        
+
         post_text = ''
         for c in notebook_json['cells']:
             cell_text = ''.join(c['source'])
@@ -100,15 +98,15 @@ def post():
             if '# hide' not in cell_text:
                 post_text += cell_text
                 post_text += '\n'
-            
+
         out_path = '_drafts' if IS_DRAFT else '_posts'
         out_path += f'/{out_file_name}'
-        
+
         with open(out_path, 'w+') as f:
             f.write(post_text)
-    
+
+
 if __name__ == '__main__':
-    # Example usage: 
+    # Example usage:
     # py _notebooks/blog.py _notebooks/2020-27-07-soft-addressable-computation.ipynb
     post()
-    

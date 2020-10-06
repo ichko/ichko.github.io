@@ -2,30 +2,30 @@
 
 // Define defaults for each variable.
 
-$base-font-family: 'Times New Roman', sans-serif !default;
-$base-font-size:   18px !default;
+$base-font-family: "Times New Roman", sans-serif !default;
+$base-font-size: 18px !default;
 $base-font-weight: 400 !default;
-$small-font-size:  $base-font-size * 0.875 !default;
+$small-font-size: $base-font-size * 0.875 !default;
 $base-line-height: 1.5 !default;
 
-$spacing-unit:     30px !default;
+$spacing-unit: 30px !default;
 
-$text-color:       #111 !default;
+$text-color: #111 !default;
 $background-color: #fff !default;
-$brand-color:      #999 !default;
-$secondary-color:  #a07867 !default;
+$brand-color: #999 !default;
+$secondary-color: #a07867 !default;
 
-$grey-color:       #999 !default;
+$grey-color: #999 !default;
 $grey-color-light: #e3e3e3 !default;
-$grey-color-dark:  #111 !default;
+$grey-color-dark: #111 !default;
 
 $table-text-align: left !default;
 
 // Width of the content area
-$content-width:    850px !default;
+$content-width: 850px !default;
 
-$on-palm:          600px !default;
-$on-laptop:        800px !default;
+$on-palm: 600px !default;
+$on-laptop: 800px !default;
 
 // Use media queries like this:
 // @include media-query($on-palm) {
@@ -49,20 +49,17 @@ $on-laptop:        800px !default;
 .center-image {
   max-width: 100%;
   display: block;
-  margin: 0 auto
+  margin: 0 auto;
 }
 
-.fig { 
+.fig {
   font-style: italic;
   text-align: center;
   padding-bottom: $spacing-unit;
+  font-size: 12pt;
 }
 
 // END
 
 // Import partials.
-@import
-  "minima/base",
-  "minima/layout",
-  "minima/syntax-highlighting"
-;
+@import "minima/base", "minima/layout", "minima/syntax-highlighting";
