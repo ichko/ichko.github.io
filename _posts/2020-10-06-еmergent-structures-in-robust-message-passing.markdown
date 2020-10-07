@@ -54,8 +54,66 @@ The networks are communicating normally distributed points from ${\Bbb R}^{N}$, 
 
 ## Generating structure from nothing
 
-To define and train the model we will be using [PyTorch](https://pytorch.org/)`, modern and powerful library for all things _Deep Learning_.
+To define and train the model we will be using [PyTorch](https://pytorch.org/), modern and powerful library for all things _Deep Learning_.
 To define the differentiable noise function we will use [Kornia](https://kornia.github.io/), because it has useful computer vision functions commonly used in data augmentation.
+
+For the model definition you can see the code in this repo [inverted-ae](/todo). You can inspect it, it is nothing special,
+just a few activated and batch normalized `ConvTranspose2d` layer for the `Generator` and activated and batch normalized `Conv2d`
+layers for the `Message Reconstruction` module.
+
+Between them we place sequence of `kornia` random augmentation differentiable modules like so:
+
+```python
+img = load_img(url, size=512)          # Load
+img = img.unsqueeze(0).float() / 255   # Normalize
+imgs = T.cat(16 * [img])               # Add multiple in batch
+normal_noise = T.randn_like(imgs) / 4  # Generate random noise
+
+noise = nn.Sequential(
+    kornia.augmentation.RandomAffine(
+        degrees=30,
+        translate=[0.1, 0.1],
+        scale=[0.9, 1.1],
+        shear=[-10, 10],
+    ),
+    kornia.augmentation.RandomPerspective(0.6, p=0.5),
+)
+
+augmented_imgs = noise(imgs + normal_noise)
+
+imshow(augmented_imgs)
+```
+
+This definition of the augmentation function can yields results like the following:
+
+![Augmented kit-cat](/assets/inverted-ae/kit-cat-augmentation.png)
+
+As we can see a we have a lot of affine variation, as well as shift of perspective. The normal noise added before the augmentation
+is also an important component as it leads to the generator learning to generate smoother images.
+
+This is actually all we need in terms of model definition. You can look at the code in the repo for more in dept code example.
+
+For the data we will be using the following generator:
+
+```python
+msg_size = 32
+
+def sample(bs):
+    return T.randn(bs, msg_size).to(DEVICE)
+
+def get_data_gen(bs):
+    while True:
+        X = sample(bs)
+        yield X, X
+```
+
+Really simple stiff. We generate randomly distributed vector with `msg_size` dimensions and we yields tuples of this vector replicated as we will train
+our model just like an `Auto-Encoder`.
+
+We are ready to toss the model and the data generator in our favorite `PyTorch` training loop framework. In my case that is a simple home brewed library
+that is part of the code in the repository of the project.
+
+**Lets fit and plot the generated images as we train!**
 
 <video class="center-image" autoplay="autoplay" loop="">
   <source src="/assets/inverted-ae/reverse-ae-training.webm">
