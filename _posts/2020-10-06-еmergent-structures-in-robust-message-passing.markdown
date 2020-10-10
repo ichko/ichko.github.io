@@ -1,8 +1,8 @@
 ---
 layout: post
 title: Emergent structures in noisy channel message-passing
-date: 2020-01-04 13:38:03 +0200
-categories: ml, dl, philosophy, auto encoders, neural networks
+date: 2020-10-06 13:38:03 +0200
+categories: ml dl philosophy auto-encoders neural networks
 ---
 
 So recently I stumbled upon this interesting repository - [noahtren/GlyphNet](https://github.com/noahtren/GlyphNet), explaining a mechanism for generating glyphs, like the glyphs we use in human languages:
@@ -32,17 +32,13 @@ For our experiment, we will have the following setup:
     - etc.
   - Multiplying random noise
   - And other transformation which we would like the generated images to be robust under
-    We then pass the disrupted image through a decoder (possibly conv multi-layer network) resulting in vector
-    We optimize the output to be the same as the input .
+    We then pass the disrupted image through a decoder (possibly conv multi-layer network) resulting in vector.
+  - We optimize the output to be the same as the input .
 
 In a way, we are optimizing the generator to generate images that can be understood even if perturbed slightly. Depending on the noise under which we optimize the generator learns to induce robustness into the images. It adds patterns with high dimensionality which are used to communicate the information continued in the input message.
 As a neural network architecture, this looks like an **Inverted Auto-Encoder** and it is trained exactly like on.
 
 ![Diagram of the model](/assets/inverted-ae/diagram-of-inverted-ae.png)
-
-<div class="fig">
-  Diagram of Inverted Auto-Encoder. The actual model would not generate images looking like the images in the MNIST dataset.
-</div>
 
 The model is the same as an Auto-Encoder, it just reverses the positions of the `compressor` and the `generator`.
 
@@ -86,7 +82,7 @@ imshow(augmented_imgs)
 
 This definition of the augmentation function can yields results like the following:
 
-![Augmented kit-cat](/assets/inverted-ae/kit-cat-augmentation.png)
+<img class="center-image" src="/assets/inverted-ae/kit-cat-augmentation.png" alt="Augmented kit-cat" />
 
 As we can see a we have a lot of affine variation, as well as shift of perspective. The normal noise added before the augmentation
 is also an important component as it leads to the generator learning to generate smoother images.

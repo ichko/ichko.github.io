@@ -2,7 +2,7 @@
 layout: post
 title: "Generating random art with neural networks"
 date: 2019-11-15 21:39:01 +0200
-categories: neural networks, cppn, art
+categories: neural networks cppn art
 image: /assets/cppn/1_cool_fire.png
 ---
 
