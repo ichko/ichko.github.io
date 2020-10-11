@@ -36,17 +36,19 @@ For our experiment, we will have the following setup:
   - We optimize the output to be the same as the input .
 
 In a way, we are optimizing the generator to generate images that can be understood even if perturbed slightly. Depending on the noise under which we optimize the generator learns to induce robustness into the images. It adds patterns with high dimensionality which are used to communicate the information continued in the input message.
-As a neural network architecture, this looks like an **Inverted Auto-Encoder** and it is trained exactly like on.
+As a neural network architecture, this looks like an **Inverted Auto-Encoder** and it is trained exactly like a regular **AE**.
 
 ![Diagram of the model](/assets/inverted-ae/diagram-of-inverted-ae.png)
 
-The model is the same as an Auto-Encoder, it just reverses the positions of the `compressor` and the `generator`.
+The networks are communicating normally distributed points from ${\Bbb R}^{N}$, where $N$ is the size of the input message.
+
+The model is the same as an Auto-Encoder, it just reverses the positions of the `compressor`, commonly known as **Encoder**, but here it is named **Decoder** since it decodes the initial message, and the `generator`,
+commonly known as **Decoder**, but here it is named **Generator** since it generates the image.
+The generator has to learn to generate images that are invariant in their information contents after they are augmented.
+
+<!-- The second law of thermodynamics states that “Isolated systems spontaneously evolve towards thermodynamic equilibrium, the state with maximum entropy”, meaning that nature is pushing the world towards being noisier and noisier and humans have naturally evolved means to exchange information in a robust manner. -->
 
 Looking at this we may start to think more and more about the nature of everything we call structured. Is robustness innate property of anything we deem structured? Maybe not, but what about structure used to communicate information between humans - like pictures or natural language.
-
-The second law of thermodynamics states that “Isolated systems spontaneously evolve towards thermodynamic equilibrium, the state with maximum entropy”, meaning that nature is pushing the world towards being noisier and noisier and humans have naturally evolved means to exchange information in a robust manner.
-
-The networks are communicating normally distributed points from ${\Bbb R}^{N}$, where $N$ is the size of the input message.
 
 ## Generating structure from nothing
 
