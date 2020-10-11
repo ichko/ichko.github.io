@@ -3,6 +3,7 @@ layout: post
 title: Emergent structures in noisy channel message-passing
 date: 2020-10-06 13:38:03 +0200
 categories: ml dl philosophy auto-encoders neural networks
+comments: true
 ---
 
 So recently I stumbled upon this interesting repository - [noahtren/GlyphNet](https://github.com/noahtren/GlyphNet), explaining a mechanism for generating glyphs, like the glyphs we use in human languages:
@@ -122,4 +123,8 @@ that is part of the code in the repository of the project.
   Images generated from the same initial messages during training.
 </div>
 
-TODO...
+#### Lets up the resolution
+
+#### Adding colors
+
+#### VAE as augmentation function

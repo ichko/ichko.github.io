@@ -30,6 +30,12 @@ github_username: ichko
 
 permalink: /:title
 
+# Disqus Comments
+disqus:
+  # Leave shortname blank to disable comments site-wide.
+  # Disable comments for any post by adding `comments: false` to that post's YAML Front Matter.
+  shortname: ichko
+
 # Build settings
 # theme: minima
 plugins:

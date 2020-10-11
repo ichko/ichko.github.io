@@ -2,7 +2,7 @@
 layout: post
 title: Transition representations
 date: 2020-01-04 13:38:03 +0200
-categories:
+comments: true
 ---
 
 An attempt at parallelizing recurrent nets during training. This is just and idea,
