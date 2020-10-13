@@ -95,7 +95,7 @@ This is actually all we need in terms of model definition. You can look at the c
 For the data we will be using the following generator:
 
 ```python
-msg_size = 32
+msg_size = 64
 
 def sample(bs):
     return T.randn(bs, msg_size).to(DEVICE)
@@ -114,8 +114,8 @@ that is part of the code in the repository of the project.
 
 **Lets fit and plot the generated images as we train!**
 
-<video class="center-image" autoplay="autoplay" loop="">
-  <source src="/assets/inverted-ae/reverse-ae-training.webm">
+<video class="center-image" controls loop="">
+  <source src="/assets/inverted-ae/inverted-ae-training.webm">
   Your browser does not support the video tag.
 </video>
 
@@ -123,8 +123,25 @@ that is part of the code in the repository of the project.
   Images generated from the same initial messages during training.
 </div>
 
+<div class="fig">
+  <img class="center-image" src="/assets/inverted-ae/inverted-ae-trained.png" alt="Trained Inverted AE" />
+  The final result of the generated images from initial message sample.
+</div>
+
+If we try to cram the same amount of information - normally distributed vectors with size 64 into a `100x100` images we get the following result.
+
+![Diagram of the model](/assets/inverted-ae/64to100x100.png)
+
+Not bad, but not particularly interesting if you ask me.
+Let's now try to progressively increase the message size and view how that changes the generated images. The idea is that this might force the
+generator to generate objects with higher level of detail.
+
 #### Lets up the resolution
 
 #### Adding colors
+
+#### Interpolating in the latent space
+
+#### Encoding and decoding MNIST
 
 #### VAE as augmentation function
