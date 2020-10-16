@@ -6,7 +6,7 @@ categories: ml dl philosophy auto-encoders neural networks
 comments: true
 ---
 
-So recently I stumbled upon this interesting repository - [noahtren/GlyphNet](https://github.com/noahtren/GlyphNet), explaining a mechanism for generating glyphs, like the glyphs we use in human languages:
+There is this nteresting repository - [noahtren/GlyphNet](https://github.com/noahtren/GlyphNet), explaining a mechanism for generating glyphs, like the glyphs we use in human languages:
 
 <img class="center-image" src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Rosetta_Stone.JPG/280px-Rosetta_Stone.JPG" alt="drawing" width="350"/>
 
