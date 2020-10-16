@@ -114,7 +114,7 @@ that is part of the code in the repository of the project.
 
 **Lets fit and plot the generated images as we train!**
 
-<video class="center-image" controls loop="">
+<video class="center-image" controls autoplay="autoplay" loop="">
   <source src="/assets/inverted-ae/inverted-ae-training.webm">
   Your browser does not support the video tag.
 </video>
