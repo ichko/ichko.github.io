@@ -133,15 +133,75 @@ If we try to cram the same amount of information - normally distributed vectors 
 ![Diagram of the model](/assets/inverted-ae/64to100x100.png)
 
 Not bad, but not particularly interesting if you ask me.
-Let's now try to progressively increase the message size and view how that changes the generated images. The idea is that this might force the
-generator to generate objects with higher level of detail.
+Let's now try to progressively increase the message size and view how that changes the generated images. The idea is that this might force the generator to generate objects with higher level of detail.
 
-#### Lets up the resolution
+The generated images are with size of the message `32`, `128`, `512` and `1024` respectively:
+
+![Glyphs with generated from message with size 32](/assets/inverted-ae/glyphs32.png)
+
+![Glyphs with generated from message with size 128](/assets/inverted-ae/glyphs128.png)
+
+![Glyphs with generated from message with size 512](/assets/inverted-ae/glyphs512.png)
+
+![Glyphs with generated from message with size 1024](/assets/inverted-ae/glyphs1024.png)
+
+No particular pattern is seen here only pretty images with some sort of structure in them.
+Lets continue with the experiments.
 
 #### Adding colors
+
+Lets add three channels to the generated image and see what kind of colorfull paterns the
+netowrk will generate. The following images are generated from
+networks trained with messages with dimensions `32`, `128`, `512`, `1024` and `2048` respectively.
+
+![Colorful images generated from message with size 32](/assets/inverted-ae/color32.png)
+
+![Colorful images generated from message with size 128](/assets/inverted-ae/color128.png)
+
+![Colorful images generated from message with size 512](/assets/inverted-ae/color512.png)
+
+![Colorful images generated from message with size 1024](/assets/inverted-ae/color1024.png)
+
+![Colorful images generated from message with size 2048](/assets/inverted-ae/color2048.png)
+
+Pretty cool, again, I don't think I see a pattern of increasing compleity as I was expecting.
 
 #### Interpolating in the latent space
 
 #### Encoding and decoding MNIST
 
+An interesting question I thinnk is worthy of an experiment is: 'Does a network like the ones described here can
+generalize and give usefull representations to natural images?'. To answer this question we must first answer
+what constitutes a good representation. We will try to evaluate the usefullness of the network and the
+representations it extracts in a few ways:
+
+- Invert the `encoder` and the `decoder`, as they would be in an ordinary `AE` and try to reconstruct
+images from the MNIST dataset. Bare in mind the network has never seen natural images.
+
+- We will use the representations from the `image encoder` to squeeze the images from MNIST
+and train a classifier over these representations. We can compare against randomly initialized encoder
+and see which trains faster and to what accuracy.
+
+- We can also try to find representations generating valid MNIST images by doing gradient ascend
+over the trained network by optimizing the input representation of the generator, with a loss
+differentiabing between the output of the generator and a particular MNIST image.
+
 #### VAE as augmentation function
+
+For a final experiment lets do the most generic setup possible. Up untill now we traind
+the `generator` to generate images robust to particular disruptions, which we deemd
+innate properties of natural images. What if we try to do something even more generic.
+At the end of the day we want images with structure. And something that has structure has low
+entropy, meaning it can be compressed. What is a neural network that tries to compress something.
+Well, an `AE`, a normal one. Let's replace our disruption function with an `AE` and
+force the generator to generaet images that are compressable (by an `AE`) - have low entropy.
+
+More precicely the network we will experiment with look have the following struture:
+
+![Diagram of Hourglass network](/assets/inverted-ae/hourglass-network.png)
+
+What will these *expanding* and *squeezing* networks be. Well, if they are stacks of dense
+layers the property of local dependence of the pixels will be lost, bacause the network
+would not differentiate between pixels that are near by vs pixels that are far apart.
+But if we use convolutional layers, because of the nature of the convolution operation,
+we can expect structures with local dependence.
