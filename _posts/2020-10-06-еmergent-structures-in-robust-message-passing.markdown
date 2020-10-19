@@ -164,9 +164,22 @@ networks trained with messages with dimensions `32`, `128`, `512`, `1024` and `2
 
 ![Colorful images generated from message with size 2048](/assets/inverted-ae/color2048.png)
 
-Pretty cool, again, I don't think I see a pattern of increasing complexity as I was expecting.
+Pretty cool, but again, I don't think I see a pattern of increasing complexity as I was expecting.
 
 #### Interpolating in the latent space
+
+For our next visualization, lets sample multiple points (`symbol representations`) and
+interpolate between them, interpolating also between the generated images.
+I do not expect to see anything of special, but it would probably look nice.
+
+<video class="center-image" controls autoplay="autoplay" loop="">
+  <source src="/assets/inverted-ae/lerp-color-gray.webm">
+  Your browser does not support the video tag.
+</video>
+
+<div class="fig">
+  Linear interpolation in latent space.
+</div>
 
 #### Encoding and decoding MNIST
 
