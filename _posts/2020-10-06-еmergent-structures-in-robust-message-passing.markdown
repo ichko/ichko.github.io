@@ -6,7 +6,7 @@ categories: ml dl philosophy auto-encoders neural networks
 comments: true
 ---
 
-There is this nteresting repository - [noahtren/GlyphNet](https://github.com/noahtren/GlyphNet), explaining a mechanism for generating glyphs, like the glyphs we use in human languages:
+There is this cool repository - [noahtren/GlyphNet](https://github.com/noahtren/GlyphNet), explaining a mechanism for generating glyphs, like the glyphs we use in human languages:
 
 <img class="center-image" src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Rosetta_Stone.JPG/280px-Rosetta_Stone.JPG" alt="drawing" width="350"/>
 
@@ -150,8 +150,8 @@ Lets continue with the experiments.
 
 #### Adding colors
 
-Lets add three channels to the generated image and see what kind of colorfull paterns the
-netowrk will generate. The following images are generated from
+Lets add three channels to the generated image and see what kind of colorful patterns the
+network will generate. The following images are generated from
 networks trained with messages with dimensions `32`, `128`, `512`, `1024` and `2048` respectively.
 
 ![Colorful images generated from message with size 32](/assets/inverted-ae/color32.png)
@@ -164,44 +164,44 @@ networks trained with messages with dimensions `32`, `128`, `512`, `1024` and `2
 
 ![Colorful images generated from message with size 2048](/assets/inverted-ae/color2048.png)
 
-Pretty cool, again, I don't think I see a pattern of increasing compleity as I was expecting.
+Pretty cool, again, I don't think I see a pattern of increasing complexity as I was expecting.
 
 #### Interpolating in the latent space
 
 #### Encoding and decoding MNIST
 
-An interesting question I thinnk is worthy of an experiment is: 'Does a network like the ones described here can
-generalize and give usefull representations to natural images?'. To answer this question we must first answer
-what constitutes a good representation. We will try to evaluate the usefullness of the network and the
+An interesting question I think is worthy of an experiment is: 'Does a network like the ones described here can
+generalize and give useful representations to natural images?'. To answer this question we must first answer
+what constitutes a good representation. We will try to evaluate the usefulness of the network and the
 representations it extracts in a few ways:
 
 - Invert the `encoder` and the `decoder`, as they would be in an ordinary `AE` and try to reconstruct
-images from the MNIST dataset. Bare in mind the network has never seen natural images.
+  images from the MNIST dataset. Bare in mind the network has never seen natural images.
 
 - We will use the representations from the `image encoder` to squeeze the images from MNIST
-and train a classifier over these representations. We can compare against randomly initialized encoder
-and see which trains faster and to what accuracy.
+  and train a classifier over these representations. We can compare against randomly initialized encoder
+  and see which trains faster and to what accuracy.
 
 - We can also try to find representations generating valid MNIST images by doing gradient ascend
-over the trained network by optimizing the input representation of the generator, with a loss
-differentiabing between the output of the generator and a particular MNIST image.
+  over the trained network by optimizing the input representation of the generator, with a loss
+  differentiating between the output of the generator and a particular MNIST image.
 
 #### VAE as augmentation function
 
-For a final experiment lets do the most generic setup possible. Up untill now we traind
-the `generator` to generate images robust to particular disruptions, which we deemd
+For a final experiment lets do the most generic setup possible. Up until now we trained
+the `generator` to generate images robust to particular disruptions, which we deemed
 innate properties of natural images. What if we try to do something even more generic.
 At the end of the day we want images with structure. And something that has structure has low
 entropy, meaning it can be compressed. What is a neural network that tries to compress something.
 Well, an `AE`, a normal one. Let's replace our disruption function with an `AE` and
-force the generator to generaet images that are compressable (by an `AE`) - have low entropy.
+force the generator to generate images that are compressible (by an `AE`) - have low entropy.
 
-More precicely the network we will experiment with look have the following struture:
+More precisely the network we will experiment with look have the following structure:
 
 ![Diagram of Hourglass network](/assets/inverted-ae/hourglass-network.png)
 
-What will these *expanding* and *squeezing* networks be. Well, if they are stacks of dense
-layers the property of local dependence of the pixels will be lost, bacause the network
+What will these _expanding_ and _squeezing_ networks be. Well, if they are stacks of dense
+layers the property of local dependence of the pixels will be lost, because the network
 would not differentiate between pixels that are near by vs pixels that are far apart.
-But if we use convolutional layers, because of the nature of the convolution operation,
+But if we use `Conv2D` layers, because of the nature of the convolution operation,
 we can expect structures with local dependence.
