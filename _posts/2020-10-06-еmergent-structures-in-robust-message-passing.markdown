@@ -6,7 +6,7 @@ categories: ml dl philosophy auto-encoders neural networks
 comments: true
 ---
 
-There is this cool repository - [noahtren/GlyphNet](https://github.com/noahtren/GlyphNet), explaining a mechanism for generating glyphs, like the glyphs we use in human languages:
+There is this cool repository - [noahtren/GlyphNet](https://github.com/noahtren/GlyphNet), explaining a mechanism for generating glyphs, like the glyphs we use in human languages with neural networks:
 
 <img class="center-image" src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Rosetta_Stone.JPG/280px-Rosetta_Stone.JPG" alt="drawing" width="350"/>
 
@@ -178,7 +178,16 @@ I do not expect to see anything of special, but it would probably look nice.
 </video>
 
 <div class="fig">
-  Linear interpolation in latent space.
+  Linear interpolation in latent space with single channel images.
+</div>
+
+<video class="center-image" controls autoplay="autoplay" loop="">
+  <source src="/assets/inverted-ae/lerp-color-full.webm">
+  Your browser does not support the video tag.
+</video>
+
+<div class="fig">
+  Linear interpolation in latent space with three channel images.
 </div>
 
 #### Encoding and decoding MNIST
@@ -205,16 +214,16 @@ For a final experiment lets do the most generic setup possible. Up until now we 
 the `generator` to generate images robust to particular disruptions, which we deemed
 innate properties of natural images. What if we try to do something even more generic.
 At the end of the day we want images with structure. And something that has structure has low
-entropy, meaning it can be compressed. What is a neural network that tries to compress something.
-Well, an `AE`, a normal one. Let's replace our disruption function with an `AE` and
+entropy, meaning it can be compressed. Which neural network architecture can compress?
+An `AutoEncoder`, a normal one. Let's replace our disruption function with an `AE` and
 force the generator to generate images that are compressible (by an `AE`) - have low entropy.
 
 More precisely the network we will experiment with look have the following structure:
 
 ![Diagram of Hourglass network](/assets/inverted-ae/hourglass-network.png)
 
-What will these _expanding_ and _squeezing_ networks be. Well, if they are stacks of dense
-layers the property of local dependence of the pixels will be lost, because the network
-would not differentiate between pixels that are near by vs pixels that are far apart.
+What will the structure of these _expanding_ and _squeezing_ networks be. Well,
+if they are stacks of dense layers the property of local dependence of the pixels will be lost,
+because the network would not differentiate between pixels that are near by vs pixels that are far apart.
 But if we use `Conv2D` layers, because of the nature of the convolution operation,
 we can expect structures with local dependence.
