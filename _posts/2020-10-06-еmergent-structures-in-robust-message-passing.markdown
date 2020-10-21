@@ -56,7 +56,7 @@ Looking at this we may start to think more and more about the nature of everythi
 To define and train the model we will be using [PyTorch](https://pytorch.org/), modern and powerful library for all things _Deep Learning_.
 To define the differentiable noise function we will use [Kornia](https://kornia.github.io/), because it has useful computer vision functions commonly used in data augmentation.
 
-For the model definition you can see the code in this repo [inverted-ae](/todo). You can inspect it, it is nothing special,
+For the model definition you can see the code in this repo [inverted-auto-encoder](https://github.com/ichko/inverted-auto-encoder). You can inspect it, it is nothing special,
 just a few activated and batch normalized `ConvTranspose2d` layer for the `Generator` and activated and batch normalized `Conv2d`
 layers for the `Message Reconstruction` module.
 
