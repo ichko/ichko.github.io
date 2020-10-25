@@ -233,7 +233,7 @@ It is evident that the network can not reconstruct the images in understandable 
 from the example above we can see that all images from the same class are "reconstructed"
 with similar shapes, which is interesting and expected.
 
-#### Training classifier over the zero supervised representations
+#### Training a classifier over the zero supervised representations
 
 For this experiment we trained four instances of the model with different configurations with single trainable
 linear classifier on top of the decoder.
