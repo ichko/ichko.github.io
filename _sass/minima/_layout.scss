@@ -3,8 +3,11 @@
  */
 .site-header {
   // border-top: 10px solid #eee;
-  border-bottom: 4px double #eee;
-  font-family: "Times New Roman", Times, serif;
+  background: #eee;
+  border-bottom: 2px dashed #e0e0e0;
+  outline: 5px solid #eee;
+  margin-top: 5px;
+  font-family: "Cantata One", "Times New Roman", Times, serif;
 
   // Positioning context for the mobile navigation icon
   position: relative;
@@ -201,7 +204,6 @@
 .post-link {
   display: block;
   @include relative-font-size(1.5);
-  font-weight: bold;
 }
 
 /**
