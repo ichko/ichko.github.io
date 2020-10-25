@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Implicit generator
-date: 2020-10-06 13:38:03 +0200
+date: 2020-10-25 13:38:03 +0200
 categories: ml dl neural-networks generators
 comments: true
 ---
