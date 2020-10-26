@@ -210,9 +210,10 @@ is being interpreted as higher level features in the image.
 
 ### Usefulness of the model
 
-An interesting question I think is worthy of an experiment is: `Does a network like the ones described here can generalize and give useful representations to natural images?`. To answer this question we must first answer
-what constitutes a good representation. We will try to evaluate the usefulness of the network and the
-representations it extracts in a few ways:
+An interesting question I think is worthy of an experiment is:
+**Can a network similar to the ones described here generalize and give useful representations to natural images?**.
+To answer this question we must first answer what constitutes a good representation.
+We will try to evaluate the usefulness of the network and the representations it extracts in a few ways:
 
 1. Invert the `generator` and the `message decoder`, as they would be in an ordinary `AE` and try to reconstruct
    images from the MNIST dataset. Bare in mind the network has never seen natural images.
