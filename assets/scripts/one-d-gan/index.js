@@ -1,5 +1,5 @@
 const range = n => Array.from(Array(n).keys());
-const SOFT_ONE = 1;
+const SOFT_ONE = 0.95;
 
 class OneDGAN {
     constructor(lr) {
@@ -26,7 +26,7 @@ class OneDGAN {
         this.D = D;
 
         this.D.compile({
-            optimizer: tf.train.adam(lr, 0.5),
+            optimizer: tf.train.sgd(lr, 0.5),
             loss: ['binaryCrossentropy']
         });
 
@@ -40,7 +40,7 @@ class OneDGAN {
         })();
 
         this.combined.compile({
-            optimizer: tf.train.adam(lr, 0.5),
+            optimizer: tf.train.sgd(lr, 0.5),
             loss: ['binaryCrossentropy']
         });
     }
@@ -116,7 +116,7 @@ document.body.onload = async() => {
     const bimodalData = generateData(5000);
     const fixedInputs = tf.randomNormal([5000, 1]);
 
-    const gan = new OneDGAN(0.002);
+    const gan = new OneDGAN(0.2);
     const its = 500;
 
     var trace = {
@@ -138,32 +138,49 @@ document.body.onload = async() => {
         }
     };
     var data = [trace, trace2];
-    var layout = { barmode: "overlay" };
-    Plotly.newPlot('myDiv', data, layout);
+    var layout = {
+        barmode: "overlay",
+        showlegend: false,
+        dragmode: 'pan',
+        xaxis: { range: [-3.5, 3.5] }
+    };
+    Plotly.newPlot('myDiv', data, layout, {
+        displayModeBar: false,
+        staticPlot: true
+    });
 
-
-    for (let i = 0; i < its; i++) {
-        await tf.nextFrame();
-
+    async function step(i) {
         const batch = generateData(128);
         const loss = await gan.optim_step(batch);
+
         console.log(`[${i}] Loss: ${loss}`);
 
         const fakeOutputs = gan.G.predict(fixedInputs);
 
-
         Plotly.animate('myDiv', {
             data: [{ x: fakeOutputs.dataSync() }],
             traces: [1],
-            layout: {}
+            // layout: {}
         }, {
             transition: {
-                duration: 100,
+                duration: 10,
                 easing: 'cubic-in-out'
             },
             frame: {
-                duration: 100
+                duration: 10
             }
-        })
+        });
+
+        await tf.nextFrame();
     }
+
+    let i = 0;
+    const loop = async() => {
+        i += 1;
+        await step(i);
+
+        window.requestAnimationFrame(loop);
+    };
+
+    loop();
 };
