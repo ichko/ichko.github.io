@@ -1,101 +1,4 @@
 const range = n => Array.from(Array(n).keys());
-const SOFT_ONE = 0.95;
-
-class OneDGAN {
-    constructor(lr, inpDims, outDims = 1) {
-        this.inpDims = inpDims;
-        this.outDims = outDims;
-
-        const G = (() => {
-            const input = tf.input({ shape: [this.inpDims] });
-
-            let x = input;
-            x = tf.layers.dense({ units: 10, activation: 'relu' }).apply(x);
-            x = tf.layers.dense({ units: 10, activation: 'relu' }).apply(x);
-            x = tf.layers.dense({ units: this.outDims, activation: 'linear' }).apply(x);
-            return tf.model({ inputs: input, outputs: x });
-        })();
-
-        const D = (() => {
-            const input = tf.input({ shape: [this.outDims] });
-
-            let x = input;
-            x = tf.layers.dense({ units: 10, activation: 'relu' }).apply(x);
-            x = tf.layers.dense({ units: 10, activation: 'relu' }).apply(x);
-            x = tf.layers.dense({ units: 1, activation: 'sigmoid' }).apply(x);
-            return tf.model({ inputs: input, outputs: x });
-        })();
-
-        this.G = G;
-        this.D = D;
-
-        this.D.compile({
-            optimizer: tf.train.adam(lr, 0.5),
-            loss: ['binaryCrossentropy']
-        });
-
-        this.combined = (() => {
-            let input = tf.input({ shape: [inpDims] });
-            let x = input;
-            x = this.G.apply(input);
-            this.D.trainable = false;
-            x = this.D.apply(x);
-            return tf.model({ inputs: input, outputs: x });
-        })();
-
-        this.combined.compile({
-            optimizer: tf.train.adam(lr, 0.5),
-            loss: ['binaryCrossentropy']
-        });
-
-    }
-
-    async optim_step(X_real) {
-        const [bs] = X_real.shape;
-        // this.D.trainable = true;
-        const loss_d = await this.optim_step_D(X_real);
-        // this.D.trainable = false;
-        const loss_g = await this.optim_step_G(bs * 2);
-
-        return [loss_g, loss_d];
-    }
-
-    async optim_step_D(X_real) {
-        const [bs] = X_real.shape;
-
-        const [X, y] = tf.tidy(() => {
-            const noise = tf.randomNormal([bs, this.inpDims]);
-            const X_fake = this.G.predict(noise);
-
-            const X = tf.concat([X_real, X_fake], 0);
-
-            const y = tf.tidy(
-                () => tf.concat([tf.ones([bs, 1]).mul(SOFT_ONE), tf.zeros([bs, 1])])
-            );
-
-            return [X, y];
-        });
-
-        const loss = await this.D.trainOnBatch(X, y);
-        tf.dispose([X, y]);
-
-        return loss;
-    }
-
-    async optim_step_G(bs) {
-        const [X, y] = tf.tidy(() => {
-            const noise = tf.randomNormal([bs, this.inpDims]);
-            const y = tf.ones([bs, 1]).mul(SOFT_ONE);
-
-            return [noise, y];
-        });
-
-        const loss = await this.combined.trainOnBatch(X, y);
-        tf.dispose([X, y]);
-
-        return loss;
-    }
-}
 
 function generateData(size) {
     const frac = 0.3;
@@ -112,15 +15,37 @@ function generateData(size) {
     return bimodalData;
 }
 
-document.body.onload = async() => {
-    const inpDims = 3;
+let gan, fixedInputs;
+const ySampleSize = 100;
+let t = 0;
+let rangeInputs;
+
+function init() {
+    t = 0;
+
+    const inpDims = 1;
     const bimodalData = generateData(5000).dataSync();
-    const fixedInputs = tf.randomNormal([5000, inpDims]);
+    fixedInputs = tf.randomNormal([5000, inpDims]);
     const fixedInputSync = fixedInputs.dataSync();
+    gan = new OneDGAN(0.008, inpDims);
+    const fakeOutputs = gan.G.predict(fixedInputs).dataSync();
 
-    const gan = new OneDGAN(0.002, inpDims);
+    rangeInputs = tf.range(-2, 2, 0.1);
+    const rangeInputSync = rangeInputs.dataSync();
 
-    var trace = {
+    const inputDataTrace = {
+        name: 'Input data',
+        x: fixedInputSync,
+        type: 'histogram',
+        opacity: 0.8,
+        histnorm: 'probability',
+        xbins: { size: 0.2 },
+        xaxis: 'x4',
+        yaxis: 'y4',
+        legendgroup: 'distrib',
+    }
+
+    const trainingDataTrace = {
         name: 'Target data',
         x: bimodalData,
         type: 'histogram',
@@ -132,9 +57,9 @@ document.body.onload = async() => {
         legendgroup: 'distrib',
     };
 
-    var trace2 = {
+    const generatedDataTrace = {
         name: 'GAN data',
-        x: fixedInputSync,
+        x: fakeOutputs,
         type: 'histogram',
         histnorm: 'probability',
         opacity: 0.8,
@@ -145,12 +70,10 @@ document.body.onload = async() => {
     };
 
 
-    const ySampleSize = 100;
     const ySamples = range(ySampleSize).map(() => 0)
     const tickersTrace = {
-        marker: { color: 'orange', symbol: 'line-ns-open' },
+        marker: { color: 'orange', symbol: 'line-ns-open', opacity: 0.8 },
         mode: 'markers',
-        name: 'Group 2',
         showlegend: false,
         type: 'scatter',
         x: ySamples,
@@ -159,8 +82,8 @@ document.body.onload = async() => {
         yaxis: 'y2',
     };
 
-    var dLossTrace = {
-        y: [],
+    const dLossTrace = {
+        y: [0, 1],
         type: 'scatter',
         mode: 'lines',
         xaxis: 'x3',
@@ -169,8 +92,8 @@ document.body.onload = async() => {
         legendgroup: 'loss',
     };
 
-    var gLossTrace = {
-        y: [],
+    const gLossTrace = {
+        y: [0, 1],
         type: 'scatter',
         mode: 'lines',
         xaxis: 'x3',
@@ -179,73 +102,143 @@ document.body.onload = async() => {
         legendgroup: 'loss',
     };
 
-    var data = [trace, trace2, tickersTrace, gLossTrace, dLossTrace];
-    var layout = {
+    const generatorFunctionTrace = {
+        x: rangeInputSync,
+        y: gan.G.predict(rangeInputs).dataSync(),
+        type: 'scatter',
+        mode: 'lines',
+        xaxis: 'x6',
+        yaxis: 'y6',
+        name: 'G Landscape',
+        legendgroup: 'loss',
+    };
+
+    const hideGridAx = {
+        showgrid: false,
+        showline: false,
+        zeroline: false,
+        showticklabels: false
+    };
+
+    const data = [
+        trainingDataTrace,
+        generatedDataTrace,
+        tickersTrace,
+        gLossTrace,
+        dLossTrace,
+        inputDataTrace,
+        generatorFunctionTrace
+    ];
+
+    const layout = {
+        margin: {
+            r: 10,
+            t: 30,
+            b: 10,
+            l: 10
+        },
+        // annotations: [
+        //     {
+        //         x: 0.5,
+        //         y: 0.5,
+        //         xref: 'x5',
+        //         yref: 'y5',
+        //         text: '$G(x)$',
+        //         arrowhead: 4,
+        //         ax: -50,
+        //         ay: -20
+        //     }
+        // ],
         barmode: 'overlay',
         dragmode: 'pan',
-        height: 700,
-        legend: { x: 1, y: 1 },
-        xaxis1: {
-            range: [-3.5, 3.5],
-            domain: [0, 1],
-            ticks: 'outside',
-        },
-        xaxis3: { ticks: 'outside' },
-        yaxis1: { range: [0, 0.13], domain: [0.44, 1] },
+        height: 350,
+        width: 750,
+        legend: { orientation: 'h', y: 1 },
+
+        xaxis4: { range: [-3.5, 3.5], domain: [0, 0.15] },
+        yaxis4: { range: [0, 0.13], domain: [0.35, 0.65] },
+
+        xaxis6: { domain: [0.2, 0.45] },
+        yaxis6: { domain: [0.30, 0.70] },
+
+        xaxis1: { range: [-3.5, 3.5], domain: [0.55, 1] },
+        yaxis1: { range: [0, 0.13], domain: [0.15, 0.8] },
+
+        xaxis5: { range: [0, 1], domain: [0, 1], ...hideGridAx },
+        yaxis5: { range: [0, 1], domain: [0, 1], ...hideGridAx },
+
+        xaxis3: { domain: [0.85, 1] },
+        yaxis3: { domain: [0.85, 1.0] },
+
         yaxis2: {
-            domain: [0.35, 0.4],
-            showgrid: false,
-            showline: false,
+            domain: [0, 0.1],
+            ...hideGridAx,
             zeroline: true,
             zerolinecolor: '#ccc',
-            showticklabels: false
         },
-        yaxis3: { domain: [0, 0.3] },
         grid: { rows: 3, columns: 1, pattern: 'independent' },
+        plot_bgcolor: 'rgba(0, 0, 0, 0)',
+        paper_bgcolor: 'rgba(0, 0, 0, 0)'
     };
-    Plotly.newPlot('myDiv', data, layout, {
+
+    Plotly.purge('gan-output');
+
+    Plotly.newPlot('gan-output', data, layout, {
         displayModeBar: false,
         staticPlot: true
     });
+}
 
-    const losses = [
-        [],
-        []
-    ];
+document.body.onload = async () => {
+    init();
+
+    let running = false;
+    const playPauseEl = document.getElementById('play-pause');
+    const itInfoEl = document.getElementById('iteration-info');
+    const resetEl = document.getElementById('reset');
+
+    function setButtonLabel() {
+        const label = running ? 'Pause' : 'Play';
+        playPauseEl.innerText = label;
+    }
+    setButtonLabel();
+
+    playPauseEl.onclick = () => {
+        running = !running;
+        setButtonLabel();
+    };
+
+    resetEl.onclick = () => {
+        init();
+    };
+
 
     async function step(i) {
-        const batch = generateData(512);
+        const batch = generateData(16);
         const loss = await gan.optim_step(batch);
         const [gLoss, dLoss] = loss;
-        losses[0].push(dLoss);
-        losses[1].push(gLoss);
 
         console.log(`[${i}] Loss: ${loss}`);
 
         const fakeOutputs = gan.G.predict(fixedInputs).dataSync();
 
-        Plotly.update('myDiv', { x: fakeOutputs }, {}, 1);
-        Plotly.update('myDiv', { x: fakeOutputs.slice(0, ySampleSize) }, {}, 2);
-        Plotly.extendTraces('myDiv', {
-            y: [
-                [dLoss],
-                [gLoss],
-            ]
-        }, [3, 4], 500)
 
-        // await tf.nextFrame();
+        Plotly.update('gan-output', { x: fakeOutputs }, {}, 1);
+        Plotly.update('gan-output', { y: gan.G.predict(rangeInputs).dataSync() }, {}, 6);
+        Plotly.update('gan-output', { x: fakeOutputs.slice(0, ySampleSize) }, {}, 2);
+        Plotly.extendTraces('gan-output', { y: [[dLoss], [gLoss]] }, [3, 4], 100);
+
+        await tf.nextFrame();
     }
 
-    let t = 0;
-    const loop = async() => {
-        t += 1;
-        for (let i = 0; i < 10; i++) {
+    const loop = async () => {
+        if (running) {
+            t += 1;
             await step(t);
+            itInfoEl.innerText = '#' + t.toString().padStart(4, 0);
         }
 
-        if (t < 1000) {
-            window.requestAnimationFrame(loop);
-        }
+        window.requestAnimationFrame(loop);
     };
 
     loop();

@@ -1,0 +1,34 @@
+---
+layout: post
+title: 1D GAN
+date: 2020-10-26 13:38:03 +0200
+categories: ml dl neural-networks generators GAN
+comments: false
+---
+
+
+<!-- Import TensorFlow.js -->
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.0.0/dist/tf.js"></script>
+<!-- Import tfjs-vis -->
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-vis@1.0.2/dist/tfjs-vis.umd.min.js"></script>
+
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+<script src="/assets/scripts/one-d-gan/gan.js"></script>
+<script src="/assets/scripts/one-d-gan/index.js"></script>
+
+<div class="gray-box">
+  <div class="white-box padding-container flex-horizontal">
+    <button class="btn primary fixed-width-100" id="play-pause">Pause</button>
+    <button class="btn" id="reset">Reset</button>
+    <div class="info-box">
+      Iteration <br><span id="iteration-info">#0000</span>
+    </div>
+  </div>
+
+  <div class="padding-container">
+    <div id="ga-input"></div>
+
+    <div id="gan-output"></div>
+  </div>
+</div>

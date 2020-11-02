@@ -44,22 +44,5 @@ $on-laptop: 800px !default;
   font-size: $base-font-size * $ratio;
 }
 
-// Custom CSS
-
-.center-image {
-  max-width: 100%;
-  display: block;
-  margin: 0 auto;
-}
-
-.fig {
-  font-style: italic;
-  text-align: center;
-  padding-bottom: $spacing-unit / 4;
-  font-size: 12pt;
-}
-
-// END
-
 // Import partials.
 @import "minima/base", "minima/layout", "minima/syntax-highlighting";
