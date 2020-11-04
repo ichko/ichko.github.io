@@ -12,9 +12,10 @@ comments: false
 <!-- Import tfjs-vis -->
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-vis@1.0.2/dist/tfjs-vis.umd.min.js"></script>
 
-<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script src="https://cdn.plot.ly/plotly-latest.js"></script>
 
 <script src="/assets/scripts/one-d-gan/gan.js"></script>
+<script src="/assets/scripts/one-d-gan/utils.js"></script>
 <script src="/assets/scripts/one-d-gan/index.js"></script>
 
 <div class="gray-box">
@@ -27,8 +28,8 @@ comments: false
   </div>
 
   <div class="padding-container">
-    <div id="ga-input"></div>
-
-    <div id="gan-output"></div>
+    <object id="svg-object" style="width: 100%;" type="image/svg+xml" data="/assets/gan/diagram.svg">
+      GAN Diagram
+    </object>
   </div>
 </div>

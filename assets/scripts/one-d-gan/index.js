@@ -1,75 +1,108 @@
 const range = n => Array.from(Array(n).keys());
 
-function generateData(size) {
-    const frac = 0.3;
+const generateData = data.bimodal(0.3);
 
-    const leftSize = Math.floor(size * frac);
-    const rightSize = Math.floor(size * (1 - frac));
+const hideGridAx = {
+    showgrid: false,
+    showline: false,
+    zeroline: false,
+    showticklabels: false,
+};
 
-    const firstMode = tf.randomNormal([leftSize, 1], -1.5, 0.5);
-    const secondMode = tf.randomNormal([rightSize, 1], 1.5, 0.5);
-    const bimodalData = firstMode.concat(secondMode);
+function initInputDataUI(fixedInputSync) {
+    const [containerEl, layoutSize] = prepareDiagramElement({
+        svgId: 'svg-object',
+        textContent: 'first-box',
+    });
 
-    tf.util.shuffle(bimodalData);
-
-    return bimodalData;
-}
-
-let gan, fixedInputs;
-const ySampleSize = 100;
-let t = 0;
-let rangeInputs;
-
-function init() {
-    t = 0;
-
-    const inpDims = 1;
-    const bimodalData = generateData(5000).dataSync();
-    fixedInputs = tf.randomNormal([5000, inpDims]);
-    const fixedInputSync = fixedInputs.dataSync();
-    gan = new OneDGAN(0.008, inpDims);
-    const fakeOutputs = gan.G.predict(fixedInputs).dataSync();
-
-    rangeInputs = tf.range(-2, 2, 0.1);
-    const rangeInputSync = rangeInputs.dataSync();
-
-    const inputDataTrace = {
+    const trace = {
         name: 'Input data',
         x: fixedInputSync,
         type: 'histogram',
         opacity: 0.8,
+        marker: { color: '#FF7F0E' },
         histnorm: 'probability',
-        xbins: { size: 0.2 },
-        xaxis: 'x4',
-        yaxis: 'y4',
-        legendgroup: 'distrib',
-    }
-
-    const trainingDataTrace = {
-        name: 'Target data',
-        x: bimodalData,
-        type: 'histogram',
-        opacity: 0.3,
-        histnorm: 'probability',
-        xbins: { size: 0.2 },
-        xaxis: 'x1',
-        yaxis: 'y1',
+        xbins: { size: 0.3 },
         legendgroup: 'distrib',
     };
 
-    const generatedDataTrace = {
-        name: 'GAN data',
-        x: fakeOutputs,
+    const layout = {
+        margin: { r: 1, t: 20, b: 25, l: 1 },
+        dragmode: 'pan',
+        showlegend: false,
+        plot_bgcolor: 'rgba(0, 0, 0, 0)',
+        paper_bgcolor: 'rgba(0, 0, 0, 0)',
+        xaxis: { showgrid: false },
+        yaxis: { showgrid: false },
+        ...layoutSize,
+    };
+
+    Plotly.purge(containerEl);
+
+    Plotly.newPlot(containerEl, [trace], layout, {
+        displayModeBar: false,
+        staticPlot: true,
+        responsive: true,
+    });
+};
+
+function initGANViewUI(x, y) {
+    const [containerEl, layoutSize] = prepareDiagramElement({
+        svgId: 'svg-object',
+        textContent: 'second-box',
+    });
+
+    const trace = {
+        x: x,
+        y: y,
+        type: 'scatter',
+        mode: 'lines',
+        line: { width: 5, color: '#cc0000' }
+    };
+
+    const layout = {
+        margin: { r: 1, t: 1, b: 1, l: 1 },
+        plot_bgcolor: 'rgba(0, 0, 0, 0)',
+        paper_bgcolor: 'rgba(0, 0, 0, 0)',
+        ...layoutSize,
+    };
+
+    Plotly.purge(containerEl);
+
+    Plotly.newPlot(containerEl, [trace], layout, {
+        displayModeBar: false,
+        staticPlot: true,
+        responsive: true,
+    });
+
+    return ySynced => {
+        Plotly.update(containerEl, { y: ySynced }, {}, 0);
+    };
+}
+
+function initGANOutputUI(output, target) {
+    const [containerEl, layoutSize] = prepareDiagramElement({
+        svgId: 'svg-object',
+        textContent: 'third-box',
+    });
+
+    const targetTrace = {
+        x: target,
+        type: 'histogram',
+        opacity: 0.5,
+        histnorm: 'probability',
+        xbins: { size: 0.2 },
+    };
+
+    const outputTrace = {
+        x: output,
         type: 'histogram',
         histnorm: 'probability',
         opacity: 0.8,
         xbins: { size: 0.2 },
-        xaxis: 'x1',
-        yaxis: 'y1',
-        legendgroup: 'distrib',
     };
 
-
+    const ySampleSize = 50;
     const ySamples = range(ySampleSize).map(() => 0)
     const tickersTrace = {
         marker: { color: 'orange', symbol: 'line-ns-open', opacity: 0.8 },
@@ -78,168 +111,153 @@ function init() {
         type: 'scatter',
         x: ySamples,
         y: ySamples,
-        xaxis: 'x1',
         yaxis: 'y2',
     };
 
+    const layout = {
+        margin: { r: 1, t: 70, b: 5, l: 1 },
+        plot_bgcolor: 'rgba(0, 0, 0, 0)',
+        paper_bgcolor: 'rgba(0, 0, 0, 0)',
+        xaxis: { range: [-3.5, 3.5] },
+        yaxis: { range: [0, 0.13], domain: [0.15, 1] },
+        yaxis2: {
+            range: [-3.5, 3.5],
+            domain: [0, 0.1],
+            showgrid: false, 
+            zerolinecolor: '#ccc',
+        },
+        barmode: 'overlay',
+        showlegend: false,
+        ...layoutSize,
+    };
+
+    Plotly.purge(containerEl);
+
+    Plotly.newPlot(containerEl, [targetTrace, outputTrace, tickersTrace], layout, {
+        displayModeBar: false,
+        staticPlot: true,
+    });
+
+    return fakeOutputsSync => {
+        Plotly.update(containerEl, { x: fakeOutputsSync }, {}, 1);
+        Plotly.update(containerEl, { x: fakeOutputsSync.slice(0, ySampleSize) }, {}, 2);
+    };
+}
+
+function initLossUI() {
+    const [containerEl, layoutSize] = prepareDiagramElement({
+        svgId: 'svg-object',
+        textContent: 'loss-box',
+    });
+
     const dLossTrace = {
-        y: [0, 1],
+        y: [1, 1],
         type: 'scatter',
         mode: 'lines',
-        xaxis: 'x3',
-        yaxis: 'y3',
-        name: 'D Loss',
-        legendgroup: 'loss',
+        line: { width: 3, color: '#66B2FF' }
     };
 
     const gLossTrace = {
-        y: [0, 1],
+        y: [1, 1],
         type: 'scatter',
         mode: 'lines',
-        xaxis: 'x3',
-        yaxis: 'y3',
-        name: 'G Loss',
-        legendgroup: 'loss',
+        line: { width: 3, color: '#DB6E00' },
     };
-
-    const generatorFunctionTrace = {
-        x: rangeInputSync,
-        y: gan.G.predict(rangeInputs).dataSync(),
-        type: 'scatter',
-        mode: 'lines',
-        xaxis: 'x6',
-        yaxis: 'y6',
-        name: 'G Landscape',
-        legendgroup: 'loss',
-    };
-
-    const hideGridAx = {
-        showgrid: false,
-        showline: false,
-        zeroline: false,
-        showticklabels: false
-    };
-
-    const data = [
-        trainingDataTrace,
-        generatedDataTrace,
-        tickersTrace,
-        gLossTrace,
-        dLossTrace,
-        inputDataTrace,
-        generatorFunctionTrace
-    ];
 
     const layout = {
-        margin: {
-            r: 10,
-            t: 30,
-            b: 10,
-            l: 10
-        },
-        // annotations: [
-        //     {
-        //         x: 0.5,
-        //         y: 0.5,
-        //         xref: 'x5',
-        //         yref: 'y5',
-        //         text: '$G(x)$',
-        //         arrowhead: 4,
-        //         ax: -50,
-        //         ay: -20
-        //     }
-        // ],
-        barmode: 'overlay',
-        dragmode: 'pan',
-        height: 350,
-        width: 750,
-        legend: { orientation: 'h', y: 1 },
-
-        xaxis4: { range: [-3.5, 3.5], domain: [0, 0.15] },
-        yaxis4: { range: [0, 0.13], domain: [0.35, 0.65] },
-
-        xaxis6: { domain: [0.2, 0.45] },
-        yaxis6: { domain: [0.30, 0.70] },
-
-        xaxis1: { range: [-3.5, 3.5], domain: [0.55, 1] },
-        yaxis1: { range: [0, 0.13], domain: [0.15, 0.8] },
-
-        xaxis5: { range: [0, 1], domain: [0, 1], ...hideGridAx },
-        yaxis5: { range: [0, 1], domain: [0, 1], ...hideGridAx },
-
-        xaxis3: { domain: [0.85, 1] },
-        yaxis3: { domain: [0.85, 1.0] },
-
-        yaxis2: {
-            domain: [0, 0.1],
-            ...hideGridAx,
-            zeroline: true,
-            zerolinecolor: '#ccc',
-        },
-        grid: { rows: 3, columns: 1, pattern: 'independent' },
+        margin: { r: 0, t: 0, b: 0, l: 0 },
         plot_bgcolor: 'rgba(0, 0, 0, 0)',
-        paper_bgcolor: 'rgba(0, 0, 0, 0)'
+        paper_bgcolor: 'rgba(0, 0, 0, 0)',
+        showlegend: false,
+        xaxis1: { ...hideGridAx },
+        yaxis1: { ...hideGridAx },
+        ...layoutSize,
     };
 
-    Plotly.purge('gan-output');
+    Plotly.purge(containerEl);
 
-    Plotly.newPlot('gan-output', data, layout, {
+    Plotly.newPlot(containerEl, [dLossTrace, gLossTrace], layout, {
         displayModeBar: false,
-        staticPlot: true
+        staticPlot: true,
     });
+
+    return (dLoss, gLoss) => {
+        monkeyPatchSVGContext('svg-object', () => {
+            Plotly.extendTraces(containerEl, { y: [[dLoss], [gLoss]] }, [0, 1], 50);
+        });
+    };
 }
 
 document.body.onload = async () => {
-    init();
-
+    let t = 0;
     let running = false;
-    const playPauseEl = document.getElementById('play-pause');
-    const itInfoEl = document.getElementById('iteration-info');
-    const resetEl = document.getElementById('reset');
 
-    function setButtonLabel() {
-        const label = running ? 'Pause' : 'Play';
-        playPauseEl.innerText = label;
-    }
-    setButtonLabel();
+    const init = () => {
+        const inpDims = 1;
+        const gan = new OneDGAN(0.005, inpDims);
+        const bimodalDataSync = generateData(5000).dataSync();
+        const fixedInputs = gan.sampleZ([5000, inpDims]);
+        const fixedInputSync = fixedInputs.dataSync();
+        const fakeOutputsSync = gan.G.predict(fixedInputs).dataSync();
 
-    playPauseEl.onclick = () => {
-        running = !running;
+        const rangeInputs = tf.range(-2, 2, 0.2);
+        const rangeInputSync = rangeInputs.dataSync();
+
+        initInputDataUI(fixedInputSync);
+        const updateGANView = initGANViewUI(rangeInputSync, gan.G.predict(rangeInputs).dataSync());
+        const updateGANOutputs = initGANOutputUI(fakeOutputsSync, bimodalDataSync);
+        const updateLoss = initLossUI();
+
+        const playPauseEl = document.getElementById('play-pause');
+        const itInfoEl = document.getElementById('iteration-info');
+        const resetEl = document.getElementById('reset');
+
+        function setButtonLabel() {
+            const label = running ? 'Pause' : 'Play';
+            playPauseEl.innerText = label;
+        }
         setButtonLabel();
-    };
 
-    resetEl.onclick = () => {
-        init();
-    };
+        playPauseEl.onclick = () => {
+            running = !running;
+            setButtonLabel();
+        };
 
-
-    async function step(i) {
-        const batch = generateData(16);
-        const loss = await gan.optim_step(batch);
-        const [gLoss, dLoss] = loss;
-
-        console.log(`[${i}] Loss: ${loss}`);
-
-        const fakeOutputs = gan.G.predict(fixedInputs).dataSync();
+        resetEl.onclick = () => {
+            init();
+        };
 
 
-        Plotly.update('gan-output', { x: fakeOutputs }, {}, 1);
-        Plotly.update('gan-output', { y: gan.G.predict(rangeInputs).dataSync() }, {}, 6);
-        Plotly.update('gan-output', { x: fakeOutputs.slice(0, ySampleSize) }, {}, 2);
-        Plotly.extendTraces('gan-output', { y: [[dLoss], [gLoss]] }, [3, 4], 100);
+        async function step(i) {
+            const batch = generateData(256);
+            const loss = await gan.optim_step(batch);
+            const [gLoss, dLoss] = loss;
 
-        await tf.nextFrame();
-    }
+            // console.log(`[${i}] Loss: ${loss}`);
 
-    const loop = async () => {
-        if (running) {
-            t += 1;
-            await step(t);
-            itInfoEl.innerText = '#' + t.toString().padStart(4, 0);
+            const fakeOutputsSync = gan.G.predict(fixedInputs).dataSync();
+            const ganRangeOutputSynced = gan.G.predict(rangeInputs).dataSync()
+
+            updateGANOutputs(fakeOutputsSync);
+            updateGANView(ganRangeOutputSynced);
+            updateLoss(dLoss, gLoss);
+
+            await tf.nextFrame();
         }
 
-        window.requestAnimationFrame(loop);
-    };
+        async function loop() {
+            if (running) {
+                t += 1;
+                await step(t);
+                itInfoEl.innerText = '#' + t.toString().padStart(4, 0);
+            }
+    
+            window.requestAnimationFrame(loop);
+        };
 
+        return loop;
+    }
+
+    const loop = init();
     loop();
 };

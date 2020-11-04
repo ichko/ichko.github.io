@@ -1,8 +1,8 @@
 const SOFT_ONE = 0.95;
 
 const data = {
-    unimodal() {
-        return size => tf.randomNormal([size, 1])
+    unimodal(size) {
+        return tf.randomNormal(size)
     },
     bimodal(frac = 0.3) {
         return size => {
@@ -31,6 +31,7 @@ class OneDGAN {
             let x = input;
             x = tf.layers.dense({ units: 20, activation: 'relu' }).apply(x);
             x = tf.layers.dense({ units: 10, activation: 'relu' }).apply(x);
+            x = tf.layers.dense({ units: 10, activation: 'relu' }).apply(x);
             x = tf.layers.dense({ units: this.outDims, activation: 'linear' }).apply(x);
             return tf.model({ inputs: input, outputs: x });
         })();
@@ -39,6 +40,7 @@ class OneDGAN {
             const input = tf.input({ shape: [this.outDims] });
 
             let x = input;
+            x = tf.layers.dense({ units: 10, activation: 'relu' }).apply(x);
             x = tf.layers.dense({ units: 10, activation: 'relu' }).apply(x);
             x = tf.layers.dense({ units: 20, activation: 'relu' }).apply(x);
             x = tf.layers.dense({ units: 1, activation: 'sigmoid' }).apply(x);
@@ -66,7 +68,10 @@ class OneDGAN {
             optimizer: tf.train.adam(lr, 0.5),
             loss: ['binaryCrossentropy']
         });
+    }
 
+    sampleZ(shape) {
+        return tf.randomNormal(shape);
     }
 
     async optim_step(X_real) {
@@ -83,7 +88,7 @@ class OneDGAN {
         const [bs] = X_real.shape;
 
         const [X, y] = tf.tidy(() => {
-            const noise = tf.randomNormal([bs, this.inpDims]);
+            const noise = this.sampleZ([bs, this.inpDims]);
             const X_fake = this.G.predict(noise);
 
             const X = tf.concat([X_real, X_fake], 0);
@@ -103,7 +108,7 @@ class OneDGAN {
 
     async optim_step_G(bs) {
         const [X, y] = tf.tidy(() => {
-            const noise = tf.randomNormal([bs, this.inpDims]);
+            const noise = this.sampleZ([bs, this.inpDims]);
             const y = tf.ones([bs, 1]).mul(SOFT_ONE);
 
             return [noise, y];
