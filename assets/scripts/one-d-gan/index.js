@@ -2,7 +2,7 @@ const range = n => Array.from(Array(n).keys());
 
 // const hex = ["eac435","345995","e40066","03cea4","fb4d3d","57b8ff","4c230a","280004"];
 // const hex = ["08415c","cc2936","ebbab9","388697","b5ffe1","432534","412234","08a4bd"];
-const hex = ["fc0","3d9","3df","f30","13f","f31","fc0"];
+const hex = ["fc0","3d9","3df","d66","66c","f60","fc0"];
 
 const C = hex.map(c => `#${c}`);
 const colors = {
@@ -93,7 +93,7 @@ function initGANViewUI(x, y) {
     });
 
     return ySynced => {
-        Plotly.update(containerEl, { y: ySynced }, {}, 0);
+        Plotly.restyle(containerEl, { y: ySynced });
     };
 }
 
@@ -165,8 +165,8 @@ function initGANOutputUI(output, target) {
     });
 
     return fakeOutputsSync => {
-        Plotly.update(containerEl, { x: fakeOutputsSync }, {}, 1);
-        Plotly.update(containerEl, { x: fakeOutputsSync.slice(0, ySampleSize) }, {}, 2);
+        Plotly.restyle(containerEl, { x: fakeOutputsSync }, 1);
+        Plotly.restyle(containerEl, { x: fakeOutputsSync.slice(0, ySampleSize) }, 2);
     };
 }
 
@@ -273,7 +273,7 @@ function initDInputBoxesUI(output, target) {
     });
 
     return fakeOutputsSync => {
-        Plotly.update(gzContainerEl, { x: fakeOutputsSync }, {}, 0);
+        Plotly.restyle(gzContainerEl, { x: fakeOutputsSync }, 0);
     };
 }
 
@@ -307,7 +307,7 @@ function initDBoxUI(x, y) {
     });
 
     return ySynced => {
-        Plotly.update(containerEl, { y: ySynced }, {}, 0);
+        Plotly.restyle(containerEl, { y: ySynced }, 0);
     };
 }
 
@@ -323,7 +323,7 @@ function initDOutputUI(dx, dgz) {
         type: 'histogram',
         opacity: 0.8,
         histnorm: 'probability',
-        xbins: { size: 0.1 },
+        xbins: { size: 0.05 },
         name: '$D(X)$',
     };
 
@@ -333,7 +333,7 @@ function initDOutputUI(dx, dgz) {
         type: 'histogram',
         histnorm: 'probability',
         opacity: 0.8,
-        xbins: { size: 0.1 },
+        xbins: { size: 0.05 },
         name: '$D(G(z))$',
     };
 
@@ -361,8 +361,8 @@ function initDOutputUI(dx, dgz) {
     });
 
     return (dx, dgz) => {
-        Plotly.update(containerEl, { x: dgz }, {}, 0);
-        Plotly.update(containerEl, { x: dx }, {}, 1);
+        Plotly.restyle(containerEl, { x: dgz }, 0);
+        Plotly.restyle(containerEl, { x: dx }, 1);
     };
 }
 
@@ -442,11 +442,14 @@ document.body.onload = async () => {
                 combinedDOutput.slice([fakeOutputs.shape[0]], [targetData.shape[0]]).dataSync(),
             ];
 
-            updateGANOutputs(fakeOutputsSync);
-            updateDInputBox(fakeOutputsSync);
+            if (i % 10 == 0) {
+                updateGANOutputs(fakeOutputsSync);
+                updateDInputBox(fakeOutputsSync);
+                updateDOutputBox(dFakeOutputsSync, dTargetDataSync);
+            }
+
             updateGANView(ganRangeOutputSync);
             updateDBox(ganRangeDOutputSync);
-            updateDOutputBox(dFakeOutputsSync, dTargetDataSync);
             updateLoss(dLoss, gLoss);
         }
 
