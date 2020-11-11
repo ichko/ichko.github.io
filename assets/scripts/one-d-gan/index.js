@@ -1,9 +1,8 @@
 requirejs.config({
-    baseUrl: '',
     paths: {
         tf: 'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.0.0/dist/tf',
         tfvis: 'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-vis@1.0.2/dist/tfjs-vis.umd.min',
-        plotly: 'https://cdn.plot.ly/plotly-latest',
+        plotly: 'https://cdn.plot.ly/plotly-latest.min',
 
         gan: '/assets/scripts/one-d-gan/gan',
         utils: '/assets/scripts/one-d-gan/utils',
@@ -34,11 +33,9 @@ async function main() {
         selector: '.svg'
     });
 
-    let gan = undefined;
-
-    async function init(running = false) {
+    async function init(running, firstCall) {
         const inpDims = 1;
-        gan = new OneDGAN(0.005, inpDims);
+        const gan = new OneDGAN(0.005, inpDims);
 
         const targetData = generateData(512);
         const targetDataSync = targetData.dataSync();
@@ -87,7 +84,8 @@ async function main() {
         const combinedDInput = rangeInputs.concat(fakeOutputs).concat(targetData);
 
         async function step(i) {
-            const batch = generateData(128);
+            const bs = i == 0 ? 2 : 128;
+            const batch = generateData(bs);
             const loss = await gan.optim_step(batch);
             const [gLoss, dLoss] = loss;
 
@@ -128,7 +126,14 @@ async function main() {
         };
 
         loop();
+
+        if (firstCall) {
+            await step(0);
+        }
     }
 
-    init();
+    await init(false, true);
+
+    const mainEl = document.getElementById('interactive-gan')
+    mainEl.style.visibility = 'visible';
 }
