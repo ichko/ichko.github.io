@@ -27,13 +27,13 @@ async function main() {
     } = require('utils');
 
     const generateData = data.bimodal(0.3);
-    let t = 0;
 
     await loadSVGs({
         selector: '.svg'
     });
 
     async function init(running, firstCall) {
+        let t = 0;
         const inpDims = 1;
         const gan = new OneDGAN(0.005, inpDims);
 
