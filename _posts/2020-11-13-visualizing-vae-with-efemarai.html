@@ -282,11 +282,16 @@ efemarai
 
 <p>
 {% highlight python %}
-...
-with ef.scan(wait=i==0):
-    loss = model.criterion(X)
-    loss.backward()
-...
+import efemarai as ef
+
+def optimize(...):
+    ...
+
+    with ef.scan(wait=i==0):
+        loss = model.criterion(X)
+        loss.backward()
+
+    ...
 {% endhighlight %}
 </p>
 
