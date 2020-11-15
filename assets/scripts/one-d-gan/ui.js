@@ -109,11 +109,13 @@ define(require => {
       margin: {
         r: 1,
         t: 1,
-        b: 1,
+        b: 20,
         l: 1
       },
       plot_bgcolor: 'rgba(0, 0, 0, 0)',
       paper_bgcolor: 'rgba(0, 0, 0, 0)',
+      xaxis: { range: [-3, 3] },
+      yaxis: { range: [-3, 3] },
       ...defaultLayout,
       ...layoutSize,
     };
@@ -482,11 +484,13 @@ define(require => {
       margin: {
         r: 1,
         t: 1,
-        b: 1,
+        b: 20,
         l: 1
       },
       plot_bgcolor: 'rgba(0, 0, 0, 0)',
       paper_bgcolor: 'rgba(0, 0, 0, 0)',
+      xaxis: { range: [-3, 3] },
+      // yaxis: { range: [0, 1] },
       ...defaultLayout,
       ...layoutSize,
     };
