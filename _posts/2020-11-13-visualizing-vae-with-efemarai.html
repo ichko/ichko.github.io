@@ -10,6 +10,8 @@ comments: true
 
 <p>
     <img src="/assets/vae-efem-tutorial/efem-train.gif" class="center-image hundred-width styled-border" />
+    <!-- <img src="https://efemarai.com/wp-content/uploads/2020/08/efemarai_model_home_1024_1.png" class="center-image hundred-width styled-border" /> -->
+    
 </p>
 
 </div>
@@ -24,7 +26,15 @@ comments: true
 <h3>Auto-Encoder</h3>
 
 <p>
-    To explain what a VAE is we must first explain the general architecture of an auto-encoder. Auto-encoders are are a type of neural network architecture that is designed to do dimensionality reduction. The network is a composition of an encoder and a decoder. The job of the encoder is to take an input and “compress” it to a vector with less dimensionality. The job of the decoder is to take this lower dimensionality representation and expand it to the original shape of the data. The auto-encoder is then trained in unsupervised manned to output whatever data we input into it. The point of this is for the encoder to learn to squeeze the original data in vectors with lower dimensions preserving only the most important features of the data - the ones that can then be used to reconstruct the data with higher precision by the decoder.
+    To explain what a VAE is we must first explain the general architecture of an auto-encoder.
+    Auto-encoders are are a type of neural network architecture that is designed to do dimensionality reduction.
+    The network is a composition of an encoder and a decoder. The job of the encoder is to take an input and “compress”
+    it to a vector with less dimensionality. The job of the decoder is to take this lower dimensionality representation and
+    expand it to the original shape of the data. The auto-encoder is then trained in unsupervised manned to output whatever
+    data we input into it.
+    The point of this is for the encoder to learn to squeeze the original data in vectors with lower dimensions
+    preserving only the most important features of the data - the ones that can then be used to reconstruct the data with
+    higher precision by the decoder.
 </p>
 
 </div>
