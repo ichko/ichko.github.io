@@ -114,8 +114,12 @@ define(require => {
       },
       plot_bgcolor: 'rgba(0, 0, 0, 0)',
       paper_bgcolor: 'rgba(0, 0, 0, 0)',
-      xaxis: { range: [-3, 3] },
-      yaxis: { range: [-3, 3] },
+      xaxis: {
+        range: [-3, 3]
+      },
+      yaxis: {
+        range: [-3, 3]
+      },
       ...defaultLayout,
       ...layoutSize,
     };
@@ -489,7 +493,9 @@ define(require => {
       },
       plot_bgcolor: 'rgba(0, 0, 0, 0)',
       paper_bgcolor: 'rgba(0, 0, 0, 0)',
-      xaxis: { range: [-3, 3] },
+      xaxis: {
+        range: [-3, 3]
+      },
       // yaxis: { range: [0, 1] },
       ...defaultLayout,
       ...layoutSize,
@@ -581,7 +587,7 @@ define(require => {
       bargap: 0,
       legend: {
         x: 0,
-        y: 0.87,
+        y: 1,
         xanchor: 'left',
       },
       ...defaultLayout,

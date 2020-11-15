@@ -53,7 +53,7 @@ async function main() {
         const updateLoss = ui.initLossUI();
 
         const updateGANOutputs = await ui.initGANOutputUI(fakeOutputsSync, targetDataSync);
-        const updateDInputBox = await ui.initDInputBoxesUI(fakeOutputsSync, targetDataSync);
+        // const updateDInputBox = await ui.initDInputBoxesUI(fakeOutputsSync, targetDataSync);
         const updateDOutputBox = await ui.initDOutputUI(
             gan.D.predict(targetData).dataSync(),
             gan.D.predict(fakeOutputs).dataSync(),
@@ -106,7 +106,7 @@ async function main() {
 
             if (i % 5 == 0) {
                 updateGANOutputs(fakeOutputsSync);
-                updateDInputBox(fakeOutputsSync);
+                // updateDInputBox(fakeOutputsSync);
                 updateDOutputBox(dTargetDataSync, dFakeOutputsSync);
             }
 
