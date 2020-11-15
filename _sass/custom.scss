@@ -5,13 +5,21 @@
     margin: 0 auto;
 }
 
+.space-top {
+    margin-top: 20px;
+}
+
 .hundred-width {
     width: 100%;
 }
 
 .styled-border {
-    border: 15px solid #eee;
-    outline: 4px double #e0e0e0;
+    padding: 5px;
+    background-color: #eee;
+    border: 15px solid #fff;
+    box-shadow: 1px 1px 5px rgba(0,0,0,0.1);
+    border-radius: 5px;
+    box-sizing: border-box;
 }
 
 .fig {
