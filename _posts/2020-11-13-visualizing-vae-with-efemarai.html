@@ -1,25 +1,29 @@
 ---
 layout: widePost
-title: "Visualizing VAE with Efemarai v.1"
+title: "Visualizing VAE with Efemarai"
 date: 2020-11-13 13:38:03 +0200
 categories: ml dl tutorial vae ae auto-encoder
 comments: true
-version: 1
+version: 2
 ---
 
 <div class="wrapper">
 
 <p>
-    <img src="/assets/visualizing-vae-with-efemarai-v1/efem-train.gif" class="center-image hundred-width styled-border" />
-    <!-- <img src="https://efemarai.com/wp-content/uploads/2020/08/efemarai_model_home_1024_1.png" class="center-image hundred-width styled-border" /> -->
-    
+    <!-- <img src="/assets/visualizing-vae-with-efemarai-v1/efem-train.gif" class="center-image hundred-width styled-border" /> -->
+    <img
+        src="https://efemarai.com/wp-content/uploads/2020/08/efemarai_model_home_1024_1.png"
+        class="center-image hundred-width styled-border"
+    />
 </p>
 
 </div>
 <div class="wrapper">
 
 <p>
-    In this tutorial, we are going to implement and visualize the training process of <b>Variational Auto-Encoder</b> with 🔗 <a target="blank" href="http://efemarai.com/">Efemarai</a>.
+    In this tutorial, we are going to implement and visualize the
+    training process of <b>Variational Auto-Encoder</b> with
+    🔗 <a target="blank" href="http://efemarai.com/">Efemarai</a>.
 </p>
 
 <h2>What is VAE</h2>
@@ -54,12 +58,22 @@ version: 1
 
 <p>
     After seeing what an AE is let’s see how the variation of a VAE comes into play.
-    Let’s say we want to generate new data after we have trained our auto-encoder. We can do that by sampling latent vectors and passing them to the decoder, but we don’t know the distribution of the latent dimension. We don’t know how to get latent vectors that are going to be decoded into meaningful outputs.
-    This is what the VAE paper addresses. With a VAE instead of learning to encode a fixed vector from which to decode, we learn to encode the parameters of a normal distribution. Using a KL term in the loss function we can force the distribution to be a multivariate normal distribution with mean zero and variance one.
+    Let’s say we want to generate new data after we have trained our auto-encoder.
+    We can do that by sampling latent vectors and passing them to the decoder,
+    but we don’t know the distribution of the latent dimension.
+    We don’t know how to get latent vectors that are going to be decoded into meaningful outputs.
+    This is what the VAE paper addresses.
+    With a VAE instead of learning to encode a fixed vector from which to decode,
+    we learn to encode the parameters of a normal distribution.
+    Using a KL term in the loss function we can force the distribution to be
+    a multivariate normal distribution with mean zero and variance one.
 </p>
 
 <p>
-    KL stands for <i>Kullback–Leibler</i> divergence which is a measure of distance between two distributions. Minimizing the KL loss in addition to the reconstruction loss lets us have an auto-encoder with known (normal) latent distribution, which we can then sample from and generate new data points by decoding the sampled vectors.
+    KL stands for <i>Kullback–Leibler</i> divergence which is a measure of distance
+    between two distributions. Minimizing the KL loss in addition to the reconstruction
+    loss lets us have an auto-encoder with known (normal) latent distribution,
+    which we can then sample from and generate new data points by decoding the sampled vectors.
 </p>
 
 </div>
@@ -78,8 +92,10 @@ version: 1
 <h4>1. The model</h4>
 
 <p>
-    The implementation will be done in <a href="https://pytorch.org/">Pytorch</a>. We start by creating a torch module and add two
-    <code class="highlighter-rouge">nn.Sequential</code> sub-modules for the <b>encoder</b> and the <b>decoder</b>.
+    The implementation will be done in <a href="https://pytorch.org/">Pytorch</a>.
+    We start by creating a torch module and add two
+    <code class="highlighter-rouge">nn.Sequential</code>
+    sub-modules for the <b>encoder</b> and the <b>decoder</b>.
 </p>
 
 <p>
@@ -118,8 +134,10 @@ class VAE(nn.Module):
 </p>
 
 <p>
-    Since the encoder is regressing to the parameters of some normal distribution we are going to
-    output <code class="highlighter-rouge">encoding_size * 2</code> number of parameters for $\sigma$ and $\mu$.
+    Since the encoder is regressing to the parameters of some
+    normal distribution we are going to output
+    <code class="highlighter-rouge">encoding_size * 2</code>
+    number of parameters for $\sigma$ and $\mu$.
 
     Let's now add functions for encoding and for decoding data.
 </p>
@@ -141,8 +159,8 @@ class VAE(nn.Module):
 </p>
 
 <p>
-    Notice how we <b>chunk</b> the output of the encoder into two vectors of parameters.
-    Then we need a way to sample $z$.
+    Notice how we <b>chunk</b> the output of the encoder
+    into two vectors of parameters. Then we need a way to sample $z$.
 </p>
 
 <h4>2. Forward sample</h4>
@@ -178,8 +196,8 @@ class VAE(nn.Module):
 <h4>3. Dataset</h4>
 
 <p>
-    Now we need a dataset. Lets go with the classic - <b>MNIST</b>. Luckily pytorch makes
-    this super easy.
+    Now we need a dataset. Lets go with the classic - <b>MNIST</b>.
+    Luckily `pytorch` makes this super easy.
 </p>
 
 <p>
@@ -249,10 +267,6 @@ optimize(
 {% endhighlight %}
 </p>
 
-<p>
-    // TODO: Add optimization gif
-</p>
-
 <h2>Visualizing the training with Efemarai</h2>
 
 <p>
@@ -274,7 +288,8 @@ pip install efemarai \
 
 <blockquote>
     <p>
-        Running the daemon locally ensures that none of your data, code or models leave your computer.
+        Running the daemon locally ensures that none of your data,
+        code or models leave your computer.
     </p>
 </blockquote>
 
@@ -287,8 +302,9 @@ efemarai
 </p>
 
 <p>
-    After that to visualize the whole computation graph during training with <i>Efemarai</i>, we just have to execute the model
-    backwards step in <code class="highlighter-rouge">ef.scan</code> like so:
+    After that to visualize the whole computation graph during training with
+    <i>Efemarai</i>, we just have to execute the model backwards step in
+    <code class="highlighter-rouge">ef.scan</code> like so:
 </p>
 
 <p>
@@ -307,12 +323,15 @@ def optimize(...):
 </p>
 
 <p>
-    In my case I add <code class="highlight-rouge">wait=i==0</code>, to make the execution of the code break on the first iteration.
-    This ensures that we can expand the graph in the web interface before the training begins.
+    In my case I add <code class="highlight-rouge">wait=i==0</code>,
+    to make the execution of the code break on the first iteration.
+    This ensures that we can expand the graph in the
+    web interface before the training begins.
 </p>
 
 <p>
-    Now is the time for us to navigate to the web interface of Efemarai at <a href="https://app.efemarai.com/run">app.efemarai.com/run</a>.
+    Now is the time for us to navigate to the web interface of Efemarai at
+    <a href="https://app.efemarai.com/run">app.efemarai.com/run</a>.
     You should be greeted with the following screen:
 </p>
 
@@ -321,7 +340,8 @@ def optimize(...):
 </p>
 
 <p>
-    You can drag with left mouse click while holding <i>Shift</i> to rotate and drag with right mouse click with <i>Shift</i> to pan.
+    You can drag with left mouse click while holding <i>Shift</i>
+    to rotate and drag with right mouse click with <i>Shift</i> to pan.
     Click on the blue boxes (operations) on the graph to expand them.
 </p>
 
@@ -331,8 +351,12 @@ def optimize(...):
 <div class="wide-wrapper">
 
 <p>
-    <object class="center-image hundred-width" type="image/svg+xml" data="/assets/visualizing-vae-with-efemarai-v1/tutorial.svg">
-    SVG not supported
+    <object
+        class="center-image hundred-width"
+        type="image/svg+xml"
+        data="/assets/visualizing-vae-with-efemarai-v1/tutorial.svg"
+        >
+        SVG not supported
     </object>
 </p>
 
