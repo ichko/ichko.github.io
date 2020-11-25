@@ -7,15 +7,15 @@ comments: true
 version: 2
 ---
 
-<div class="wrapper">
+<div class="wide-wrapper">
 
 <p>
-    <!-- <img src="/assets/visualizing-vae-with-efemarai-v1/efem-train.gif" class="center-image hundred-width styled-border" /> -->
     <img
-        src="https://efemarai.com/wp-content/uploads/2020/08/efemarai_model_home_1024_1.png"
-        class="center-image hundred-width styled-border"
+        src="/assets/visualizing-vae-with-efemarai-v1/efem-train.gif"
+        class="center-image hundred-width gray-border"
     />
 </p>
+
 
 </div>
 <div class="wrapper">
@@ -26,54 +26,48 @@ version: 2
     🔗 <a target="blank" href="http://efemarai.com/">Efemarai</a>.
 </p>
 
-<h2>What is VAE</h2>
-
-<h3>Auto-Encoder</h3>
+<h2>About Efemarai</h2>
 
 <p>
-    To explain what a VAE is we must first explain the general architecture of an auto-encoder.
-    Auto-encoders are are a type of neural network architecture that is designed to do dimensionality reduction.
-    The network is a composition of an encoder and a decoder. The job of the encoder is to take an input and “compress”
-    it to a vector with less dimensionality. The job of the decoder is to take this lower dimensionality representation and
-    expand it to the original shape of the data. The auto-encoder is then trained in unsupervised manned to output whatever
-    data we input into it.
-    The point of this is for the encoder to learn to squeeze the original data in vectors with lower dimensions
-    preserving only the most important features of the data - the ones that can then be used to reconstruct the data with
-    higher precision by the decoder.
+    <b>Efemerari</b> is a visualization and debugging tool for <b>pytorch</b> models.
+    It works by scanning the model's forward and backward steps and visualizing
+    the different modules, tensors and activations within a 3D environment right
+    in your browser.
+
+    Efemerari allows you to inspect all values of each tensor within the model
+    computation.
 </p>
 
 </div>
 <div class="wide-wrapper">
 
-<p>
-    <object class="center-image hundred-width" type="image/svg+xml" data="/assets/visualizing-vae-with-efemarai-v1/ae.svg">
-    SVG not supported
-    </object>
-</p>
+    <p>
+        <img
+            src="/assets/visualizing-vae-with-efemarai-v2/efem-present.svg"
+            class="center-image hundred-width"
+        />
+        TODO: Make gifs
+    </p>
+
 
 </div>
 <div class="wrapper">
 
-<h3>Variational Auto-Encoder</h3>
+<h2>What is VAE</h2>
 
 <p>
-    After seeing what an AE is let’s see how the variation of a VAE comes into play.
-    Let’s say we want to generate new data after we have trained our auto-encoder.
-    We can do that by sampling latent vectors and passing them to the decoder,
-    but we don’t know the distribution of the latent dimension.
-    We don’t know how to get latent vectors that are going to be decoded into meaningful outputs.
-    This is what the VAE paper addresses.
-    With a VAE instead of learning to encode a fixed vector from which to decode,
-    we learn to encode the parameters of a normal distribution.
-    Using a KL term in the loss function we can force the distribution to be
-    a multivariate normal distribution with mean zero and variance one.
+    Variational auto encoders are neural networks that learn to
+    generate unseen data from a dataset by learning to map
+    some known (latent) distribution to the unknown distribution of the
+    datasets. The architecture of a VAE follows the general architecture
+    of an auto-encoder, but also adds special module for sampling from the
+    encoded distribution parameters. The optimization procedure of a VAE also
+    adds special term to the loss to force the latent distribution to behave
+    like a normal distribution.
 </p>
 
 <p>
-    KL stands for <i>Kullback–Leibler</i> divergence which is a measure of distance
-    between two distributions. Minimizing the KL loss in addition to the reconstruction
-    loss lets us have an auto-encoder with known (normal) latent distribution,
-    which we can then sample from and generate new data points by decoding the sampled vectors.
+    The following is a diagram of a VAE:
 </p>
 
 </div>
@@ -84,12 +78,18 @@ version: 2
 </p>
 
 </div>
+
 <hr />
+
 <div class="wrapper">
 
-<h2>Implementation</h2>
+    <h2>Implementation</h2>
 
-<h4>1. The model</h4>
+    <p>
+        Let's get our hands dirty with some code.
+    </p>
+
+    <h4>1. The model</h4>
 
 <p>
     The implementation will be done in <a href="https://pytorch.org/">Pytorch</a>.
@@ -160,7 +160,9 @@ class VAE(nn.Module):
 
 <p>
     Notice how we <b>chunk</b> the output of the encoder
-    into two vectors of parameters. Then we need a way to sample $z$.
+    into two vectors of parameters. These vectors correspond to the
+    mean and variance of the distribution we are sampling from.
+    Then we need a way to sample $z$.
 </p>
 
 <h4>2. Forward sample</h4>
@@ -176,6 +178,13 @@ class VAE(nn.Module):
 {% endhighlight %}
 </p>
 
+<p>
+    The thing we do in the sample method is called reparameterization and
+    it allows us to make the sampling differentiable. Instead of directly
+    generating a sample from the inferred parameters we sample a
+    normally distributed vector from $N(0,1)$ and
+    rescale and shift it accordingly.
+</p>
 <p>
     And finally, lets implement the forward method.
 </p>
@@ -197,7 +206,7 @@ class VAE(nn.Module):
 
 <p>
     Now we need a dataset. Lets go with the classic - <b>MNIST</b>.
-    Luckily `pytorch` makes this super easy.
+    Luckily <b>torchvision</b> makes this super easy.
 </p>
 
 <p>
@@ -336,7 +345,7 @@ def optimize(...):
 </p>
 
 <p>
-    <img src="/assets/visualizing-vae-with-efemarai-v1/efem-first-launch.png" class="center-image hundred-width styled-border" />
+    <img src="/assets/visualizing-vae-with-efemarai-v1/efem-first-launch.png" class="center-image hundred-width gray-border" />
 </p>
 
 <p>
@@ -363,7 +372,7 @@ def optimize(...):
 <hr />
 
 <p>
-    <img src="/assets/visualizing-vae-with-efemarai-v1/efem-train.gif" class="center-image hundred-width styled-border" />
+    <img src="/assets/visualizing-vae-with-efemarai-v1/efem-train.gif" class="center-image hundred-width gray-border" />
 </p>
 
 </div>
@@ -374,7 +383,11 @@ def optimize(...):
 <h2>Conclusion</h2>
 
 <p>
-    // TODO:
+    In this post we saw what VAE is, how to implement one and how to 
+    visualize it. I encourage you to try the experiment yourself
+    and play around with the visualization interface of Efemarai. You can
+    also try it with models you have already implemented. The code necessary
+    for the visualization to work is literally a few lines.
 </p>
 
 </div>
