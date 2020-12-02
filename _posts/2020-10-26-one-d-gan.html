@@ -1,10 +1,13 @@
 ---
-layout: widePost
+layout: wide-post
 title: 1D GAN
 date: 2020-10-26 13:38:03 +0200
 categories: ml dl neural-networks generators GAN
 comments: false
 ---
+
+{% include templates.html %}
+
 <div class="wide-wrapper">
 
 <script
@@ -12,7 +15,7 @@ comments: false
   src="https://requirejs.org/docs/release/2.3.6/minified/require.js">
 </script>
 
-<div class="gray-box hidden" id="interactive-gan">
+<div class="gray-box">
   <div class="white-box padding-container flex-horizontal">
     <button class="btn primary fixed-width-100" id="play-pause">Pause</button>
     <button class="btn" id="reset">Reset</button>
@@ -21,9 +24,14 @@ comments: false
     </div>
   </div>
 
-  <div class="padding-container">
-    <div id="svg-object" class="svg" data-url="assets/one-d-gan/diagram.svg"></div>
-  </div>
+  <loading-indicator id="main-demo">
+    <div
+      slot="content"
+      id="svg-object"
+      class="padding-container svg"
+      data-url="assets/one-d-gan/diagram.svg"
+    ></div>
+  </loading-indicator>
 </div>
 
 </div>
