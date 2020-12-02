@@ -6,3 +6,4 @@ vendor
 _site
 __pycache__
 .ipynb_checkpoints
+.vscode/.ropeproject

@@ -8,5 +8,6 @@
         ".jekyll-cache": true,
         "_site": true,
         "vendor": true,
+        ".vscode": true,
     }
 }
