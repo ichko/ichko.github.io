@@ -1,0 +1,82 @@
+<script type="text/javascript">
+ function registerTemplateById(id) {
+    // SRC - https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_templates_and_slots
+    customElements.define(id,
+      class extends HTMLElement {
+        constructor() {
+          super();
+
+          let template = document.getElementById(id);
+          let templateContent = template.content;
+
+          const shadowRoot = this.attachShadow({
+              mode: 'open'
+            })
+            .appendChild(templateContent.cloneNode(true));
+        }
+      }
+    );
+  }
+
+  function registerAllTemplates(parent = document) {
+    const templates = Array.from(
+      parent.getElementsByTagName('template')
+    );
+    templates.forEach(t => registerTemplateById(t.id))
+  }
+
+  window.addEventListener('load', e => {
+    registerAllTemplates();
+  });
+</script>
+
+<template id="loading-indicator" class="block">
+  <style>
+    .blink-me {
+      animation: blinker 1s linear infinite;
+    }
+
+    @keyframes blinker {  
+      50% { opacity: 0; }
+    }
+
+  .loading-text {
+    font-size: 25pt;
+    text-align: center;
+    padding: 20px;
+  }
+  </style>
+
+  <!--
+    Adding `blink-me` makes the loading of the page much slower!
+    There is probably some issue with the `plotly` elements loading
+    and the `keyframs` css animation.
+  -->
+  <div class="indicator loading-text">Loading</div>
+  <slot name="content">Content</slot>
+</template>
+
+<script>
+  window.addEventListener('load', e => {
+    const wrappers = Array.from(
+      document.getElementsByTagName('loading-indicator')
+    );
+
+    const contents = wrappers.map(el => el.firstElementChild);
+    contents.forEach(c => c.style.visibility = 'hidden');
+  });
+
+  window.resolveLoading = loadIdentifier => {
+    const wrappers = Array.from(
+      document.getElementsByTagName('loading-indicator')
+    ).filter(el => el.id == loadIdentifier);
+
+    const contents = wrappers.map(el => el.firstElementChild);
+    const indicators = wrappers.map(
+      el => el.shadowRoot.querySelector('.indicator')
+    );
+
+    contents.forEach(c => c.style.visibility = 'visible');
+    indicators.forEach(c => c.remove());
+  };
+</script>

@@ -133,7 +133,5 @@ async function main() {
     }
 
     await init(false, true);
-
-    const mainEl = document.getElementById('interactive-gan')
-    mainEl.style.visibility = 'visible';
+    resolveLoading('main-demo');
 }

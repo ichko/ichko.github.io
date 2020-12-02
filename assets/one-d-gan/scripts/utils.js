@@ -175,12 +175,6 @@ define(() => {
     };
   });
 
-  const loadingElement = {
-    registerLoadingElement(element) {
-      element.a
-    },
-  };
-
   return {
     range,
     parallel,
