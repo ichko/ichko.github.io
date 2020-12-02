@@ -355,118 +355,6 @@ define(require => {
     };
   }
 
-  async function initDInputBoxesUI(output, target) {
-    const [gzContainerEl, layoutSize] = prepareDiagramElement({
-      svgId: 'svg-object',
-      textContent: 'gz-bottom-box',
-    });
-    const [xContainerEl, _layoutSize] = prepareDiagramElement({
-      svgId: 'svg-object',
-      textContent: 'x-bottom-box',
-    });
-
-    const {
-      x: outputX,
-      y: outputY,
-    } = await histogram({
-      data: output,
-      min: -3.5,
-      max: 3.5,
-      numBins: 20,
-      normalized: true
-    });
-
-    const targetTrace = {
-      x: target,
-      marker: {
-        color: colors.x
-      },
-      type: 'histogram',
-      histnorm: 'probability',
-      xbins: {
-        size: 0.3
-      },
-      opacity: 0.8,
-    };
-
-    const outputTrace = {
-      x: outputX,
-      y: outputY,
-      marker: {
-        color: colors.gz
-      },
-      type: 'bar',
-      opacity: 0.8,
-    };
-
-    const layout = {
-      margin: {
-        r: 1,
-        t: 1,
-        b: 1,
-        l: 1
-      },
-      plot_bgcolor: 'rgba(0, 0, 0, 0)',
-      paper_bgcolor: 'rgba(0, 0, 0, 0)',
-      xaxis: {
-        range: [-3.5, 3.5]
-      },
-      yaxis: {
-        range: [0, 0.13],
-        domain: [0.15, 1]
-      },
-      showlegend: false,
-      bargap: 0,
-      ...defaultLayout,
-      ...layoutSize,
-    };
-
-    Plotly.purge(gzContainerEl);
-    Plotly.purge(xContainerEl);
-
-    Plotly.newPlot(gzContainerEl, [outputTrace], layout, {
-      displayModeBar: false,
-      staticPlot: true,
-    });
-
-    Plotly.newPlot(xContainerEl, [targetTrace], layout, {
-      displayModeBar: false,
-      staticPlot: true,
-    });
-
-    return async fakeOutputsSync => {
-      const {
-        x: outputX,
-        y: outputY
-      } = await histogram({
-        data: fakeOutputsSync,
-        min: -3.5,
-        max: 3.5,
-        numBins: 20,
-        normalized: true
-      });
-
-
-      Plotly.animate(gzContainerEl, {
-        data: [{
-          x: outputX,
-          y: outputY
-        }],
-        traces: [0],
-        layout: {}
-      }, {
-        transition: {
-          duration: animDuration,
-          easing: 'ease-in'
-        },
-        frame: {
-          duration: animDuration
-        }
-      });
-      // Plotly.restyle(gzContainerEl, { x: fakeOutputsSync }, 0);
-    };
-  }
-
   function initDBoxUI(x, y) {
     const [containerEl, layoutSize] = prepareDiagramElement({
       svgId: 'svg-object',
@@ -651,7 +539,6 @@ define(require => {
     initGANViewUI,
     initGANOutputUI,
     initLossUI,
-    initDInputBoxesUI,
     initDBoxUI,
     initDOutputUI,
   };
