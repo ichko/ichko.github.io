@@ -8,7 +8,7 @@ define(require => {
 
   // const hex = ["eac435","345995","e40066","03cea4","fb4d3d","57b8ff","4c230a","280004"];
   // const hex = ["fc0","3d9","3df","d66","66c","f60","fc0"];
-  const hex = ["ff7f0e", "3d9", "4a92c3", "d33", "ff7f0e", "4a92c3", "ff7f0e"];
+  const hex = ["ff7f0e", "82B366", "4a92c3", "B85450", "ff7f0e", "4a92c3", "ff7f0e"];
   // const hex = ['orange', undefined, undefined, undefined, undefined, undefined, 'orange'];
 
   const C = hex.map(c => `${c}`);
