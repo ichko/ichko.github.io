@@ -4,9 +4,9 @@ requirejs.config({
         tfvis: 'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-vis@1.0.2/dist/tfjs-vis.umd.min',
         plotly: 'https://cdn.plot.ly/plotly-latest.min',
 
-        gan: '/assets/scripts/one-d-gan/gan',
-        utils: '/assets/scripts/one-d-gan/utils',
-        ui: '/assets/scripts/one-d-gan/ui',
+        gan: '/assets/one-d-gan/scripts/gan',
+        utils: '/assets/one-d-gan/scripts/utils',
+        ui: '/assets/one-d-gan/scripts/ui',
     }
 });
 
