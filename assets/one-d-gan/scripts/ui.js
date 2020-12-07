@@ -24,6 +24,8 @@ define(require => {
     gLoss: C[1],
   };
 
+  const animDuration = 0;
+
   const defaultLayout = {
     template: 'plotly_white',
   };
@@ -86,7 +88,6 @@ define(require => {
     });
   };
 
-  const animDuration = 50;
 
   function initGANViewUI(x, y) {
     const [containerEl, layoutSize] = prepareDiagramElement({
