@@ -132,20 +132,3 @@
   font-size: 10pt;
   color: #999;
 }
-
-.row {
-  display: flex;
-  flex: 1;
-  flex-direction: row;
-  align-items: center;
-  font-size: 12pt;
-
-  > div {
-    padding-right: 20px;
-  }
-}
-
-.motto {
-  font-size: 12pt;
-  width: 250px;
-}

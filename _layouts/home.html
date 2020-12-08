@@ -6,7 +6,9 @@ layout: default
   <h1 class="page-heading">{{ page.title }}</h1>
   {%- endif -%}
 
-  {{ content }}
+  <p>
+    Hi, my name is <a href="/about">Iliya</a> and here I blog about Generative and recurrent modeling and all kinds of creative AI.
+  </p>
 
   {% assign pinned = site.posts | where: "pinned", "true" %}
   {% assign unpinned = site.posts | where: "pinned", "false" %}

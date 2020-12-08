@@ -192,7 +192,7 @@
   font-weight: bold;
   font-size: 12pt;
   text-transform: uppercase;
-  margin-top: 0;
+  margin-top: 30px;
 }
 
 .post-list {
@@ -201,7 +201,7 @@
   // color: #999;
   list-style: none;
   margin-left: 0;
-  margin-bottom: 60px;
+  margin-bottom: 20px;
 
   > li {
     margin-bottom: $spacing-unit;
