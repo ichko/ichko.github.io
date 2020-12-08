@@ -297,7 +297,7 @@ define(require => {
         width: 4,
         color: colors.dLoss
       },
-      name: '$D\ Loss$',
+      name: '$L_D$',
     };
 
     const gLossTrace = {
@@ -309,7 +309,7 @@ define(require => {
         width: 4,
         color: colors.gLoss
       },
-      name: '$G\ Loss$',
+      name: '$L_G$',
     };
 
     const layout = {

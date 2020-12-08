@@ -129,6 +129,8 @@ h5,
 h6 {
   font-weight: $base-font-weight;
   font-family: "Cantata One", "Times New Roman", serif;
+  font-family: "Times", serif;
+  font-weight: bold;
 }
 
 /**
@@ -262,7 +264,7 @@ pre {
   width: 16px;
   height: 16px;
   display: inline-block;
-  fill: #{$grey-color};
+  fill: #999;
   padding-right: 5px;
   vertical-align: text-top;
 }

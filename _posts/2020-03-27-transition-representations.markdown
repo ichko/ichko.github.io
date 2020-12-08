@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Transition representations
+subtitle: Parallelizing recurrent nets during training
 date: 2020-01-04 13:38:03 +0200
 comments: true
 ---

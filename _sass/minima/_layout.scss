@@ -7,7 +7,8 @@
   border-bottom: 2px dashed #e0e0e0;
   outline: 5px solid #eee;
   margin-top: 5px;
-  font-family: "Cantata One", "Times New Roman", Times, serif;
+  // font-family: "Cantata One", "Times New Roman", Times, serif;
+  font-family: "Times New Roman", Times, serif;
 
   // Positioning context for the mobile navigation icon
   position: relative;
@@ -185,11 +186,22 @@
 
 .post-list-heading {
   @include relative-font-size(1.75);
+  padding-bottom: 10px;
+  color: #333;
+  border-bottom: 4px double #e3e3e3;
+  font-weight: bold;
+  font-size: 12pt;
+  text-transform: uppercase;
+  margin-top: 0;
 }
 
 .post-list {
-  margin-left: 0;
+  // list-style: decimal-leading-zero;
+  // font-size: 11pt;
+  // color: #999;
   list-style: none;
+  margin-left: 0;
+  margin-bottom: 60px;
 
   > li {
     margin-bottom: $spacing-unit;
@@ -202,8 +214,9 @@
 }
 
 .post-link {
-  display: block;
   @include relative-font-size(1.5);
+  font-size: 20pt;
+  font-weight: normal;
 }
 
 /**

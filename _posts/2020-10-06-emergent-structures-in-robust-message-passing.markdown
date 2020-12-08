@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Emergent structures in noisy channel message-passing
+subtitle: Neural networks generate visual language for communication
 date: 2020-10-06 13:38:03 +0200
 categories: ml dl philosophy auto-encoders neural networks
 comments: true

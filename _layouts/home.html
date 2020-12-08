@@ -1,7 +1,6 @@
 ---
 layout: default
 ---
-
 <div class="home">
   {%- if page.title -%}
   <h1 class="page-heading">{{ page.title }}</h1>
@@ -9,26 +8,41 @@ layout: default
 
   {{ content }}
 
-  {%- if site.posts.size > 0 -%}
-  <h2 class="post-list-heading">{{ page.list_title | default: "Posts" }}</h2>
+  {% assign pinned = site.posts | where: "pinned", "true" %}
+  {% assign unpinned = site.posts | where: "pinned", "false" %}
+
+  <h2 class="post-list-heading">Pinned</h2>
   <ul class="post-list">
-    {%- for post in site.posts -%}
+    {%- for post in pinned -%}
     <li>
       {%- assign date_format = site.minima.date_format | default: "%b %-d, %Y" -%}
-      <span class="post-meta">{{ post.date | date: date_format }}</span>
-      <h4>
-        <a class="post-link" href="{{ post.url | relative_url }}">
-          {{ post.title | escape }}
-        </a>
-      </h4>
-      {%- if site.show_excerpts -%}
-      {{ post.excerpt }}
-      {%- endif -%}
+      <a class="post-link" href="{{ post.url | relative_url }}">
+        <h4>
+          <div class="post-link-title">{{ post.title | escape }}</div>
+          <div class="post-link-subtitle"></span>{{ post.subtitle }}</div>
+          <div class="post-link-date">{{ post.date | date: date_format }}</div>
+        </h4>
+      </a>
+    </li>
+    {%- endfor -%}
+  </ul>
+
+  <h2 class="post-list-heading">Posts</h2>
+  <ul class="post-list">
+    {%- for post in unpinned -%}
+    <li>
+      {%- assign date_format = site.minima.date_format | default: "%b %-d, %Y" -%}
+      <a class="post-link" href="{{ post.url | relative_url }}">
+        <h4>
+          <div class="post-link-title">{{ post.title | escape }}</div>
+          <div class="post-link-subtitle"></span>{{ post.subtitle }}</div>
+          <div class="post-link-date">{{ post.date | date: date_format }}</div>
+        </h4>
+      </a>
     </li>
     {%- endfor -%}
   </ul>
 
   <!-- <p class="rss-subscribe">subscribe <a href="{{ "/feed.xml" | relative_url }}">via RSS</a></p> -->
-  {%- endif -%}
 
 </div>
