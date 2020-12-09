@@ -3,7 +3,6 @@
   <div class="wrapper">
     {%- assign default_paths = site.pages | map: "path" -%}
     {%- assign page_paths = site.header_pages | default: default_paths -%}
-    <a class="site-title" rel="author" href="{{ "/" | relative_url }}">{{ site.title | escape }}</a>
 
     {%- if page_paths -%}
     <nav class="site-nav">
@@ -28,6 +27,16 @@
       </div>
     </nav>
     {%- endif -%}
+
+    <span
+      style="display: flex;flex-direction: row;align-items: center;"
+    >
+      <a class="site-title" rel="author" href="{{ "/" | relative_url }}">{{ site.title | escape }}</a>
+      <!-- <img
+        style="height: 35px;margin-left: 10px;"
+        src="/assets/common/logo.svg"
+      /> -->
+    </span>
 
     <link
       href="https://fonts.googleapis.com/css2?family=Merriweather&family=Playfair+Display:wght@400;600&family=Cantata+One&isplay=swap"

@@ -12,7 +12,7 @@ and I am currently teaching a course on [Functional Programming](https://github.
 
 - Generative modeling
 - Recurrent (attention based) models (basically NTMs)
-- All things creative
+- AI Art
 - Functional programming
 
 **This is where you can find me**
@@ -46,3 +46,9 @@ and I am currently teaching a course on [Functional Programming](https://github.
 - [Desmos.com](https://www.desmos.com/) is useful tool for plotting functions
 - Big fan of [PyTorch](https://pytorch.org/)
 - But for in-browser deep learning I use [TensorFlowJS](https://www.tensorflow.org/js)
+
+---
+
+$$
+\int_{-\infty}^{+\infty} \frac{sin(x)}{x} dx = \pi
+$$
