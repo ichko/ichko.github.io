@@ -70,6 +70,12 @@ define(() => {
     };
   }
 
+  async function wait(duration) {
+    return new Promise((resolve, _reject) => {
+      setTimeout(() => resolve(), duration);
+    });
+  }
+
   // Works with SVG diagrams generated with <draw.io>
   function prepareDiagramElement({
     svgId,
@@ -122,11 +128,12 @@ define(() => {
     selector,
     dataAttr = 'data-url'
   } = {}) {
-    const promises = Array.from(document.querySelectorAll(selector)).map(async e => {
-      const svgUrl = e.attributes[dataAttr].value;
-      const content = await fetch(svgUrl);
-      e.innerHTML = await content.text();
-    });
+    const promises = Array.from(document.querySelectorAll(selector))
+      .map(async e => {
+        const svgUrl = e.attributes[dataAttr].value;
+        const content = await fetch(svgUrl);
+        e.innerHTML = await content.text();
+      });
 
     await Promise.all(promises);
   }
@@ -182,5 +189,6 @@ define(() => {
     monkeyPatchSVGContext,
     loadSVGs,
     histogram,
+    wait,
   };
 });

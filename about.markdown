@@ -4,11 +4,6 @@ title: About
 permalink: /about/
 ---
 
-<script
-  data-main="/assets/about/index.js"
-  src="https://requirejs.org/docs/release/2.3.6/minified/require.js">
-</script>
-
 My name is Iliya and I like to program interactive and visual stuff. I have recently
 finished a [Masters in AI](https://github.com/ichko/forward-model) at Sofia University
 and I am currently teaching a course on [Functional Programming](https://github.com/ichko/fmi-fp-2020-21).

@@ -1,8 +1,8 @@
 requirejs.config({
     paths: {
         tf: 'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.0.0/dist/tf',
-        tfvis: 'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-vis@1.0.2/dist/tfjs-vis.umd.min',
-        plotly: 'https://cdn.plot.ly/plotly-latest.min',
+        // tfvis: 'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-vis@1.0.2/dist/tfjs-vis.umd.min',
+        plotly: 'https://cdn.plot.ly/plotly-1.58.2.min',
 
         gan: '/assets/one-d-gan/scripts/gan',
         utils: '/assets/one-d-gan/scripts/utils',
@@ -12,7 +12,7 @@ requirejs.config({
 
 requirejs(
     ['tf', 'gan', 'ui', 'utils'],
-    () => main()
+    () => window.onload = () => main()
 );
 
 async function main() {
@@ -23,7 +23,8 @@ async function main() {
     } = require('gan');
     const ui = require('ui');
     const {
-        loadSVGs
+        loadSVGs,
+        wait,
     } = require('utils');
 
     const generateData = data.bimodal(0.3);
@@ -31,6 +32,8 @@ async function main() {
     await loadSVGs({
         selector: '.svg'
     });
+
+    const waitALittle = () => wait(10);
 
     async function init(running, firstCall) {
         let t = 0;
@@ -49,8 +52,10 @@ async function main() {
 
         ui.initInputDataUI(fixedInputSync);
         const updateGANView = ui.initGANViewUI(rangeInputSync, gan.G.predict(rangeInputs).dataSync());
+
         const updateDBox = ui.initDBoxUI(rangeInputSync, gan.D.predict(rangeInputs).dataSync());
         const updateLoss = ui.initLossUI();
+
         const updateGANOutputs = await ui.initGANOutputUI(fakeOutputsSync, targetDataSync);
         const updateDOutputBox = await ui.initDOutputUI(
             gan.D.predict(targetData).dataSync(),
@@ -102,7 +107,7 @@ async function main() {
                 combinedDOutput.slice([fakeOutputs.shape[0]], [targetData.shape[0]]).dataSync(),
             ];
 
-            if (i % 5 == 0) {
+            if (i % 3 == 0) {
                 updateGANOutputs(fakeOutputsSync);
                 updateDOutputBox(dTargetDataSync, dFakeOutputsSync);
             }
