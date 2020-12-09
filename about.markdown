@@ -30,11 +30,6 @@ and I am currently teaching a course on [Functional Programming](https://github.
 
 ---
 
-<script
-  data-main="/assets/one-d-gan/scripts/index.js"
-  src="https://requirejs.org/docs/release/2.3.6/minified/require.js">
-</script>
-
 <p>
   <object
     class="center-image"
