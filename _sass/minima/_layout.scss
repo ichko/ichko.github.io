@@ -217,6 +217,13 @@
   @include relative-font-size(1.5);
   font-size: 20pt;
   font-weight: normal;
+  display: block;
+  border-bottom: 3px solid transparent;
+
+  >:hover .post-link-title {
+    opacity: 0.85;
+    text-decoration: underline;
+  }
 }
 
 /**
