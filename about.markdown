@@ -37,3 +37,12 @@ and I am currently teaching a course on [Functional Programming](https://github.
 <div class='fig'>
   <b>Fig. 1 </b> - <a href="/cppns">CPPN</a> self portrait.
 </div>
+
+---
+
+**Tools**
+
+- I do the diagrams for the blog with [Diagrams.net](https://www.diagrams.net/)
+- [Desmos.com](https://www.desmos.com/) is useful tool for plotting functions
+- Big fan of [PyTorch](https://pytorch.org/)
+- But for in-browser deep learning I use [TensorFlowJS](https://www.tensorflow.org/js)
