@@ -129,7 +129,7 @@ h5,
 h6 {
   font-weight: $base-font-weight;
   font-family: "Cantata One", "Times New Roman", serif;
-  font-family: "Times", serif;
+  // font-family: "Times", serif;
   font-weight: bold;
 }
 
@@ -231,7 +231,9 @@ pre {
 }
 
 .extra-wide-wrapper {
-  max-width: -webkit-calc(#{$extra-wide-content-width} - (#{$spacing-unit} * 2));
+  max-width: -webkit-calc(
+    #{$extra-wide-content-width} - (#{$spacing-unit} * 2)
+  );
   max-width: calc(#{$extra-wide-content-width} - (#{$spacing-unit} * 2));
   margin-right: auto;
   margin-left: auto;

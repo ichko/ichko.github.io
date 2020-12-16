@@ -7,8 +7,8 @@
   border-bottom: 2px dashed #e0e0e0;
   outline: 5px solid #eee;
   margin-top: 5px;
-  // font-family: "Cantata One", "Times New Roman", Times, serif;
-  font-family: "Times New Roman", Times, serif;
+  font-family: "Cantata One", "Times New Roman", Times, serif;
+  // font-family: "Times New Roman", Times, serif;
 
   // Positioning context for the mobile navigation icon
   position: relative;
@@ -31,6 +31,13 @@
 .site-nav {
   float: right;
   line-height: $base-line-height * $base-font-size * 2.25;
+  font-size: 12pt;
+  font-weight: bold;
+  color: #b6b6b6;
+
+  .divider {
+    font-family: "Consolas" !important;
+  }
 
   .nav-trigger {
     display: none;
@@ -41,13 +48,12 @@
   }
 
   .page-link {
+    font-weight: normal;
     color: $brand-color;
     line-height: $base-line-height;
-
+    font-size: 14pt;
     // Gaps between nav items, but not on the last one
-    &:not(:last-child) {
-      margin-right: 20px;
-    }
+    padding: 10px;
   }
 
   @include media-query($on-palm) {
@@ -220,7 +226,7 @@
   display: block;
   border-bottom: 3px solid transparent;
 
-  >:hover .post-link-title {
+  > :hover .post-link-title {
     opacity: 0.85;
     text-decoration: underline;
   }
