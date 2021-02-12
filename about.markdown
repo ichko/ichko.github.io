@@ -21,7 +21,7 @@ and I am currently teaching a course on [Functional Programming](https://github.
 - Twitter <b> <a href="https://twitter.com/ilzhechev">/ilzhechev</a></b>
 - GitHub <b> <a href="https://github.com/ichko">/ichko</a></b>
 - CodePen <b> <a href="https://codepen.io/ichko">/ichko</a></b>
-- LinkedIn <b> <a href="https://www.linkedin.com/in/iliya-zhechev/">Iliya Zhechev</a></b>
+- LinkedIn <b> <a href="https://www.linkedin.com/in/iliya-zhechev/">/in/iliya-zhechev</a></b>
 
 ---
 

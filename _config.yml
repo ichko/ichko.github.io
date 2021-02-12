@@ -28,6 +28,7 @@ url: "ichko.github.io" # the base hostname & protocol for your site, e.g. http:/
 twitter_username: ilzhechev
 github_username: ichko
 linkedin_username: iliya-zhechev
+rss: RSS
 
 permalink: /:title
 
