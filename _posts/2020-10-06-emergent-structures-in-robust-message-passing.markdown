@@ -34,9 +34,10 @@ For our experiment, we will have the following setup:
 
 ![Diagram of message passing](/assets/inverted-ae/diagram-of-message-passing.png)
 
-- We have is a message, being randomly generated at the beginning.
-- We pass this message through an generator (possibly `conv-transpose` multi-layer network).
-- We induce differentiable noise into the image - this means that we transform the image trough a differentiable function. Examples of such functions include:
+- We have a message, being randomly generated at the beginning.
+- We pass this message through a generator (possibly `conv-transpose` multi-layer network).
+- We induce differentiable noise into the image - this means that we transform the image trough a differentiable function.
+  Examples of such functions include:
   - Arbitrary UV-remap (being differentiable with the use of `spatial transformer`)
     - Translation
     - Rotation
