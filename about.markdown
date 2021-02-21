@@ -8,6 +8,8 @@ My name is Iliya and I like to program interactive and visual stuff. I have rece
 finished a [Masters in AI](https://github.com/ichko/forward-model) at Sofia University
 and I am currently teaching a course on [Functional Programming](https://github.com/ichko/fmi-fp-2020-21).
 
+You can find my resume [here](https://docs.google.com/document/d/1r7JO3kJerb399GzJ2ZE61b5sN2b7zxHt-BYxwwimSTs/edit).
+
 **My interests include**
 
 - Generative modeling
