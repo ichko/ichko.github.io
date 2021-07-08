@@ -40,11 +40,11 @@
       50% { opacity: 0; }
     }
 
-  .loading-text {
-    font-size: 25pt;
-    text-align: center;
-    padding: 20px;
-  }
+    .loading-text {
+      font-size: 25pt;
+      text-align: center;
+      padding: 20px;
+    }
   </style>
 
   <!--
@@ -53,7 +53,7 @@
     and the `keyframs` css animation.
   -->
   <div class="indicator loading-text">Loading...</div>
-  <slot name="content">Content</slot>
+  <slot name="content"></slot>
 </template>
 
 <script>
@@ -62,7 +62,7 @@
       document.getElementsByTagName('loading-indicator')
     );
 
-    const contents = wrappers.map(el => el.firstElementChild);
+    const contents = wrappers.flatMap(el => Array.from(el.children));
     contents.forEach(c => c.style.visibility = 'hidden');
   });
 
@@ -71,7 +71,7 @@
       document.getElementsByTagName('loading-indicator')
     ).filter(el => el.id == loadIdentifier);
 
-    const contents = wrappers.map(el => el.firstElementChild);
+    const contents = wrappers.flatMap(el => Array.from(el.children));
     const indicators = wrappers.map(
       el => el.shadowRoot.querySelector('.indicator')
     );
