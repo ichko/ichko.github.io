@@ -24,6 +24,8 @@ define(require => {
     gLoss: C[1],
   };
 
+  // TODO: Rewrite with uPlot.js
+
   const animDuration = 0;
 
   const defaultLayout = {
