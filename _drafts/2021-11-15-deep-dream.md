@@ -18,6 +18,7 @@ pinned: true
 
 <!-- Load TensorFlow.js. This is required to use MobileNet. -->
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@2.0.0/dist/tf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-vis"></script>
 
 <script>
   // const paths = {
@@ -31,15 +32,34 @@ pinned: true
   //   () => window.onload = () => main()
   // );
 
-
   window.onload = () => main(tf);
 
   async function main(tf) {
+    const mainDiv = document.getElementById('main');
     tf.randomNormal([4, 4]).print();
 
-    const model = await tf.loadGraphModel("https://tfhub.dev/google/tfjs-model/imagenet/mobilenet_v2_140_224/classification/1/default/1", { fromTFHub: true })
+    const modelUrl = 'https://tfhub.dev/google/tfjs-model/imagenet/mobilenet_v2_130_224/classification/2/default/1'
+
+    const model = await tf.loadGraphModel(modelUrl, { fromTFHub: true })
+    const input = tf.variable(tf.randomNormal([1, 224, 224, 3]));
+    const out = model.predict(input);
+    const loss = () => model.predict(input).norm();
+    const optim = tf.train.sgd(0.1);
+    const {grads} = optim.computeGradients(loss, [input])
+
+    const canvas = document.createElement('canvas');
+    canvas.width = input.shape.width;
+    canvas.height = input.shape.height;
+
+    // const image = input.gather(0).clipByValue(0, 1);
+    let image = grads[0];
+    image = image.gather(0);
+    image = image.add(image.min().neg());
+    // image = image.clipByValue(0, 1);
+
     debugger;
-    console.log('Mobilenet model is loaded')
+    await tf.browser.toPixels(image, canvas);
+    mainDiv.appendChild(canvas)
 
     // mobilenet.load().then(model => {
     //   // Classify the image.
@@ -51,6 +71,8 @@ pinned: true
     // });
   }
 </script>
+
+<div id="main"></div>
 
 <!-- ## GAN in a single dimension
 
