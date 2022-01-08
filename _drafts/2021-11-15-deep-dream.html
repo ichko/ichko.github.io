@@ -1,0 +1,68 @@
+---
+layout: wide-post
+title: Deep Dream
+subtitle: "Deep Dream in your browser"
+date: 2021-11-15 23:15:03 +0200
+categories: ml dl deep-dream generators gradient-ascent
+comments: true
+pinned: true
+---
+
+<div class="wrapper" markdown="1">
+  <h4>Back propagating neural network impressions</h4>
+
+  <!-- <script
+    src="https://requirejs.org/docs/release/2.3.6/minified/require.js">
+  </script> -->
+
+  <!-- Load TensorFlow.js. This is required to use MobileNet. -->
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@2.0.0/dist/tf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-vis"></script>
+
+  <script>
+    function normalize(input) {
+      const df = input.max().sub(input.min());
+      return input.sub(input.min()).div(df).clipByValue(0, 1);
+    }
+
+    function deepDreamStep(input, model, lr = 0.05) {
+      for (let i = 0; i < 20; i++) {
+        console.log("step", i);
+        input = tf.variable(input);
+        const out = model.predict(input);
+        const loss = () => model.predict(input).norm(2);
+        const optimizer = tf.train.sgd(lr);
+        var { grads } = optimizer.computeGradients(loss, [input]);
+        grads = Object.values(grads)[0];
+        const gradsMean = grads.abs().mean();
+        grads = grads.div(gradsMean).mul(lr);
+        input = input.add(grads);
+      }
+
+      return { output: input.clipByValue(0, 1), grads: normalize(grads) };
+    }
+
+    window.onload = () => main(tf);
+
+    async function main(tf) {
+      const mainDiv = document.getElementById("main");
+      tf.randomNormal([4, 4]).print();
+
+      const modelUrl =
+        "https://tfhub.dev/google/tfjs-model/imagenet/mobilenet_v2_130_224/classification/2/default/1";
+
+      const model = await tf.loadGraphModel(modelUrl, { fromTFHub: true });
+      const input = tf.randomUniform([1, 224, 224, 3]);
+      const canvas = document.createElement("canvas");
+      canvas.width = input.shape.width;
+      canvas.height = input.shape.height;
+
+      let { output, grads } = deepDreamStep(input, model);
+      output = grads.gather(0);
+      await tf.browser.toPixels(output, canvas);
+      mainDiv.appendChild(canvas);
+    }
+  </script>
+
+  <div id="main"></div>
+</div>
