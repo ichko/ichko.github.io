@@ -16,8 +16,9 @@ comments: true
   Example of interpolation in the generated glyphs latent space.
 </div>
 
-There is this cool repository - [noahtren/GlyphNet](https://github.com/noahtren/GlyphNet), explaining a mechanism for generating glyphs, like the glyphs we use in human languages.
-Glyphs are images with 2D structure used to communicate information. We will use neural networks to generate those structured images. The basic idea is rather simple and the principles at play can be explained easily.
+In this blog post we will explain a mechanism for generating neural network glyphs, like the glyphs we use in human languages.
+Glyphs are purposeful marks, images with 2D structure used to communicate information. We will use neural networks to generate those structured images.
+The basic idea is rather simple and the principles at play can be explained easily.
 
 <img class="center-image" src="/assets/inverted-ae/emnist.png" alt="emnist" />
 
@@ -27,35 +28,39 @@ Glyphs are images with 2D structure used to communicate information. We will use
   Source: <a href="https://www.researchgate.net/figure/Samples-of-all-letters-and-digits-in-the-EMNIST-dataset_fig2_334957576">ResearchGate</a>
 </div>
 
-We want to generate images, containing visuals information, much like the images from the MNIST dataset. So what constitutes something that can be recognized in an image? Well, images are mostly smooth in their 2D visual representation - meaning pixels that are close to each other tend to have a smaller difference between their values and to be highly correlated. Also, images are robust to some sort of perturbations, visual noise, translations, rotations, and more. Meaning the information contents of an image is mostly preserved under those transformations.
-So what can we do if we want to generate images with these properties without any sort of dataset? We can optimize for robustness. But what do I mean by that?
+We want to generate images, containing visuals information, much like the images from the MNIST dataset. So what constitutes something that can be recognized in an image? Well, images are grids of pixels with close values being highly correlated. Also, images are robust to perturbations, visual noise, translations, rotations, and more. Meaning the information contents of an image is mostly preserved under those transformations.
+So what can we do if we want to generate images with these properties without any sort of dataset?
+We can optimize for robustness. But what do I mean by that?
 
-For our experiment, we will have the following setup:
+This is the training procedure we will employ:
 
-![Diagram of message passing](/assets/inverted-ae/diagram-of-message-passing.png)
+<img
+    class="hundred-width"
+    src="/assets/inverted-ae/diagram-of-message-passing.svg"
+    alt="Diagram of message passing"
+/>
 
-- We have a message, being randomly generated at the beginning.
-- We pass this message through a generator (possibly `conv-transpose` multi-layer network).
-- We induce differentiable noise into the image - this means that we transform the image trough a differentiable function.
-  Examples of such functions include:
-  - Arbitrary UV-remap (being differentiable with the use of `spatial transformer`)
-    - Translation
-    - Rotation
-    - Crop
-    - etc.
-  - Multiplying or adding normal noise
-  - And other transformation which we would like the generated images to be robust under.
-- We then pass the disrupted image through a decoder (possibly conv multi-layer network) resulting in vector.
-- We optimize the output to be the same as the input.
+1. Generate a random vector, a message.
+2. Expand the message with a generator (possibly `conv-transpose` multi-layer network) generating an image from the initial message.
+3. Induce differentiable noise into the image. Examples of such noise transformations include:
+   - Translation
+   - Rotation
+   - Crop
+   - Arbitrary UV-remap (being differentiable with the use of `spatial transformer`)
+   - Multiplying or adding normal noise
+4. Compress the disrupted image with a decoder (possibly conv multi-layer network) resulting in new vector a predicted message.
+5. Minimize the distance between the input and the predicted message.
 
-In a way, we are optimizing the generator to generate images that can be understood even if perturbed. Depending on the noise under which we optimize the generator learns to induce robustness into the images. It adds patterns with high dimensionality which are used to communicate the information continued in the input message.
+In this way, we are optimizing the generator to generate images that can be "understood" (decoded) even if perturbed.
+Depending on the noise under which we optimize the generator learns to induce robustness into the images.
+It adds patterns with high dimensionality which are used to communicate the information contained in the input message.
 As a neural network architecture, this looks like an **Inverted Auto-Encoder** and it is trained exactly like a regular **AE**.
 
-![Diagram of the model](/assets/inverted-ae/diagram-of-inverted-ae.png)
+![Diagram of the model](/assets/inverted-ae/diagram-of-inverted-ae.svg)
 
 _The image of the cat in the diagram is just an example. The network would not actually learn to generate cats._
 
-The networks are communicating normally distributed points from ${\Bbb R}^{N}$, where $N$ is the size of the input message.
+The networks are basically communicating normally distributed points from ${\Bbb R}^{N}$, where $N$ is the size of the message.
 
 The model is the same as an Auto-Encoder, it just swaps the positions of the `compressor`, commonly known as **Encoder**, but here it is named **Decoder** since it decodes the initial message, and the `generator`,
 commonly known as **Decoder**, but here it is named **Generator** since it generates the image.
@@ -63,12 +68,14 @@ The generator has to learn to generate images that still contain the original in
 
 <!-- The second law of thermodynamics states that “Isolated systems spontaneously evolve towards thermodynamic equilibrium, the state with maximum entropy”, meaning that nature is pushing the world towards being noisier and noisier and humans have naturally evolved means to exchange information in a robust manner. -->
 
-Looking at this we may start to think more and more about the nature of everything we call structured. Is robustness innate property of anything we deem structured? Maybe not, but what about structure used to communicate information between humans - like pictures or natural language?
+<!-- Looking at this we may start to think more and more about the nature of everything we call structured.
+Is robustness innate property of anything we deem structured?
+Maybe not, but what about structure used to communicate information between humans - like pictures or natural language? -->
 
 ![Colorful glyphs](/assets/inverted-ae/hd-color-glyphs.png)
 
 <div class="fig">
-  Example of generation of high-resolution colorful glyphs.
+  Example of generation of high-resolution colorful "glyphs".
 </div>
 
 ## Generating structure from nothing
@@ -76,9 +83,9 @@ Looking at this we may start to think more and more about the nature of everythi
 To define and train the model we will be using [PyTorch](https://pytorch.org/), modern and powerful library for all things _Deep Learning_.
 For the differentiable noise function we will use [Kornia](https://kornia.github.io/), because it has useful computer vision functions commonly used in data augmentation.
 
-The full code of this project can be found in this repo: [inverted-auto-encoder](https://github.com/ichko/inverted-auto-encoder). You can inspect it, it is nothing special,
-just a few activated and batch normalized `ConvTranspose2d` layer for the `Generator` and activated and batch normalized `Conv2d`
-layers for the `Message Reconstruction` module.
+The full code of this project can be found in this repo: [inverted-auto-encoder](https://github.com/ichko/inverted-auto-encoder).
+The architecture can be summarized with the following - a few activated and batch normalized `ConvTranspose2d` layer for the `Generator`
+and activated and batch normalized `Conv2d` layers for the `Message Reconstruction` network.
 
 Between them we place sequence of `kornia` random augmentation differentiable modules like so:
 
@@ -103,14 +110,14 @@ augmented_imgs = noise(imgs + normal_noise)
 imshow(augmented_imgs)
 ```
 
-This definition of the augmentation function can yields results like the following:
+This definition of the augmentation function can yields results similar to these:
 
 <img class="center-image" src="/assets/inverted-ae/kit-cat-augmentation.png" alt="Augmented kit-cat" />
 
-As we can see a we have a lot of affine variation, as well as shift of perspective. The normal noise added before the augmentation
+We have random affine and perspective transformations. The normal noise added before the augmentation
 is also an important component as it leads to the generator learning to generate smoother images.
 
-For the data we will be using the following generator:
+For the data we will be using the following message generator:
 
 ```python
 msg_size = 64
@@ -124,11 +131,11 @@ def get_data_gen(bs):
         yield X, X
 ```
 
-Really simple stiff. We generate randomly distributed vector with `msg_size` dimensions and we yields tuples of this vector replicated as we will train
+We generate randomly distributed vector with `msg_size` dimensions and we yields tuples of this vector replicated as we will train
 our model just like an `Auto-Encoder`.
 
-We are ready to toss the model and the data generator in our favorite `PyTorch` training loop framework. In my case that is a simple home brewed library
-that is part of the code in the repository of the project.
+We are ready to toss the model and the data generator in our favorite `PyTorch` training loop framework.
+In my case that is a simple home brewed library that is part of the code in the repository of the project.
 
 **Lets fit and plot the generated images as we train!**
 
@@ -150,8 +157,10 @@ If we try to cram the same amount of information - normally distributed vectors 
 
 ![Diagram of the model](/assets/inverted-ae/64to100x100.png)
 
-Not bad, but not particularly interesting if you ask me.
-Let's now try to progressively increase the message size and view how that changes the generated images. The idea is that this might force the generator to generate objects with higher level of detail.
+Voila, we got something.
+Let's now try to progressively increase the message size and view how that changes the generated images.
+The idea is that this might force the generator to generate objects with higher level of detail,
+since it has to cram more information into the same image size.
 
 The generated images are with size of the message `32`, `128`, `512` and `1024` respectively:
 
@@ -163,14 +172,14 @@ The generated images are with size of the message `32`, `128`, `512` and `1024` 
 
 ![Glyphs with generated from message with size 1024](/assets/inverted-ae/glyphs1024.png)
 
-No particular pattern is seen here, only pretty images with some sort of structure in them.
+We get pretty images with some sort of structure in them.
 Lets continue with the experiments.
 
 #### Adding color
 
-Lets add three channels to the generated image and see what kind of colorful patterns the
-network will generate. The following images are generated from
-networks trained with messages with dimensions `32`, `128`, `512`, `1024` and `2048` respectively.
+Now lets add three channels to the generated image and see what kind of colorful patterns the
+network will generate. The following images are generated from networks trained with messages
+with dimensions `32`, `128`, `512`, `1024` and `2048` respectively.
 
 ![Colorful images generated from message with size 32](/assets/inverted-ae/color32.png)
 
@@ -182,7 +191,7 @@ networks trained with messages with dimensions `32`, `128`, `512`, `1024` and `2
 
 ![Colorful images generated from message with size 2048](/assets/inverted-ae/color2048.png)
 
-Pretty cool, but again, I don't think I see a pattern of increasing complexity as I was expecting.
+Pretty cool, but I don't think I see a pattern of increasing complexity as I was expecting.
 
 ### Interpolating in latent space
 
@@ -213,52 +222,57 @@ is being interpreted as higher level features in the image.
 ### Usefulness of the model
 
 An interesting question I think is worthy of an experiment is:
-**Can a network similar to the ones described here generalize and give useful representations to natural images?**.
+**Can these networks give useful representations to natural images?**
 To answer this question we must first answer what constitutes a good representation.
-We will try to evaluate the usefulness of the network and the representations it extracts in a few ways:
+We will try to evaluate the usefulness of the network and the representations it extracts in the following ways:
 
 1. Invert the `generator` and the `message decoder`, as they would be in an ordinary `AE` and try to reconstruct
    images from the MNIST dataset. Bare in mind the network has never seen natural images.
 
-2. We will use the representations from the `image generator` to squeeze the images from MNIST
-   and train a classifier over these representations. We can compare against randomly initialized generator
-   and see which trains faster and to what accuracy.
+2. Use the representations from the `message decoder` to squeeze the images from MNIST
+   and train a classifier over these representations.
+   We can compare against randomly initialized generator and see which trains faster and to what accuracy
+   expecting out image generating network to do better.
 
 3. We can also try to find representations generating valid MNIST images by doing gradient descent
-   over the trained network by optimizing the input representation of the generator, with a loss
+   over the input representation of the generator, with a loss
    differentiating between the output of the generator and a particular MNIST image.
+   Basically searching for messages which generate the digits of MNIST.
 
 #### Reconstructing MNIST
 
-![MNIST Reconstruction](/assets/inverted-ae/mnist-reconstruction.png)
+Inverting the inverted auto encoder and reconstructing MNIST we get the following.
+Focus on the middle and the right image.
+
+![MNIST Reconstruction](/assets/inverted-ae/mnist-reconstruction.svg)
 
 It is evident that the network can not reconstruct the images in understandable manner, but
 from the example above we can see that all images from the same class are "reconstructed"
-with similar shapes, which is interesting and expected.
+with similar shapes, which is interesting.
 
 #### Training a classifier over the zero supervised representations
 
 For this experiment we trained four instances of the model with different configurations with single trainable
 linear classifier on top of the decoder.
 
-We have pre-trained decoder (with the zero-shot scheme described so far) vs randomly initialized.
-We also have frozen decoder vs decoder with non-frozen weights. We run supervised gradient descent
-multiple times and these lines are the resulting validation accuracy.
+We have pre-trained decoder (with the noise scheme described above) vs a randomly initialized one.
+We also have frozen decoder vs decoder with non-frozen weights.
+Running SGD multiple times we get the following:
 
 ![Diagram of Hourglass network](/assets/inverted-ae/classifier-chart.png)
 
-No difference in the slope of the different instances of the model is noticed, meaning we cannot
-verify the representations from the zero-shot pre-trained model are "better"
+Bummer. No difference in the slope of the different instances of the model is noticed,
+meaning we cannot verify the representations from the zero-shot pre-trained model are "better"
 for the described definition of better.
 
 #### Generating natural images optimizing the input
 
 For this final experiment lets freeze the network weights on both trained and randomly initialized
-image generator and optimize a set of trainable input vectors to generate a single batch of predefined MNIST
+image generator and optimize a set of input vectors to generate a single batch of predefined MNIST
 images. The hope is that the optimization with the trained generator will be able to find vectors
-generating the set of MNIST images, since the generator can generate some sort of structure.
+generating the set of MNIST images, since the trained generator can generate some sort of structure.
 
-Running this experiment multiple times we obtain results like the following:
+Running this experiment we get the following results:
 
 ![Optimized input with pre-trined zero-shot network](/assets/inverted-ae/ascent-pre-trained-generator.png)
 
@@ -270,22 +284,24 @@ Running this experiment multiple times we obtain results like the following:
 ![Optimized input with randomly initialized network](/assets/inverted-ae/ascent-random-generator.png)
 
 <div class="fig">
-  On the left we have the batch of actual MNIST images we optimize to generate. 
+  On the left we have the batch of actual MNIST images we optimize to generate.
   On the right are images generated from randomly initialized image generator.
 </div>
 
-As we can see the images generated by the pre-trined generator have structure in them,
+Images generated by the pre-trined generator have structure in them,
 but the digits are not recognizable, they are mostly blobs without detail.
-This lead us to believe that the generator has not learned "useful" structures,
-only simple ones that have emerged from the training for robustness and the initial
-parameters of the network.
 
 With this observation we can sadly conclude that the network has NOT learned anything
 "useful" for actual natural images, for the described definition of useful.
+But we still got a fun AI ART project 😊.
 
 ---
 
-![Diagram of Hourglass network](/assets/inverted-ae/hourglass-network.png)
+<img
+    class="hundred-width"
+    src="/assets/inverted-ae/hourglass-network.svg"
+    alt="Diagram of Hourglass network"
+/>
 
 In the next post we will experiment with `AE` as augmentation function. For now we could not show that
 this zero-shot training setup is nothing more than interesting way of generating abstract neural network art,
@@ -293,6 +309,8 @@ which depending on your interests could also be something you would like to try.
 
 For details on the implementation of the models and the experiments check out
 [the repo of the project](https://github.com/ichko/inverted-auto-encoder).
+This project was highly inspired by [GlyphNet by Noah Trenaman](https://github.com/noahtren/GlyphNet).
+You should definitely check out the repo.
 
 ## References
 
