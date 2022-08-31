@@ -32,7 +32,7 @@ We want to generate images, containing visuals information, much like the images
 So what can we do if we want to generate images with these properties without any sort of dataset?
 We can optimize for robustness. But what do I mean by that?
 
-This is the training procedure we will employ:
+This is the training procedure we will follow the model of this diagram:
 
 <img
     class="hundred-width"
@@ -62,7 +62,7 @@ _The image of the cat in the diagram is just an example. The network would not a
 
 The networks are basically communicating normally distributed points from ${\Bbb R}^{N}$, where $N$ is the size of the message.
 
-The model is the same as an Auto-Encoder, it just swaps the positions of the `compressor`, commonly known as **Encoder**, but here it is named **Decoder** since it decodes the initial message, and the `generator`,
+The model is the same as an Auto-Encoder, we just swaps the positions of the `compressor`, commonly known as **Encoder**, but here it is named **Decoder** since it decodes the initial message, and the `generator`,
 commonly known as **Decoder**, but here it is named **Generator** since it generates the image.
 The generator has to learn to generate images that still contain the original information of the message after they are augmented.
 
