@@ -1,0 +1,110 @@
+---
+layout: post
+title: Embodied classification with Neural Cellular Automata
+subtitle: Towards embodied computation with Cellular Automata
+date: 2024-10-23 13:00:00 +0200
+comments: true
+visible: 0
+draft: true
+---
+<style>
+
+canvas {
+    /* width: 300px;
+    height: 300px; */
+    image-rendering: optimizeSpeed;             /* Older versions of FF          */
+    image-rendering: -moz-crisp-edges;          /* FF 6.0+                       */
+    image-rendering: -webkit-optimize-contrast; /* Safari                        */
+    image-rendering: -o-crisp-edges;            /* OS X & Windows Opera (12.02+) */
+    image-rendering: pixelated;                 /* Awesome future-browsers       */
+    -ms-interpolation-mode: nearest-neighbor;   /* IE                            */
+}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/scriptjs@2.5.9/dist/script.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tensorflow/4.21.0/tf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-webgpu/dist/tf-backend-webgpu.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js"></script>
+<script type="module" src="/assets/nca-classifier/index.js"></script>
+
+<canvas id="canvas"></canvas>
+<div class="controls">
+    <button id="toggle">Toggle</button>
+    <button id="reset">Reset</button>
+    <button id="clear">Clear</button>
+    <button id="random">Random</button>
+    <button id="step">Step</button>
+    <button id="load">Load</button>
+</div>
+
+<div id="chart"></div>
+<link rel="stylesheet" href="https://unpkg.com/uplot/dist/uPlot.min.css">
+<script src="https://unpkg.com/uplot/dist/uPlot.iife.min.js"></script>
+
+<script>
+  // Configuration
+  const bins = 20;          // Number of bins
+  const dataRange = 100;    // Range of data (0-100)
+  const binSize = dataRange / bins;
+
+  // Generate initial data
+  function generateRandomData(size, range = dataRange) {
+    return Array.from({ length: size }, () => Math.random() * range);
+  }
+
+  // Calculate histogram frequencies
+  function calculateHistogram(data) {
+    const frequencies = new Array(bins).fill(0);
+    data.forEach(value => {
+      const binIndex = Math.min(Math.floor(value / binSize), bins - 1);
+      frequencies[binIndex]++;
+    });
+    return frequencies;
+  }
+
+  // Generate x-axis labels (bin centers)
+  const binCenters = Array.from({ length: bins }, (_, i) => (i + 0.5) * binSize);
+
+  // Initial data
+  let data = generateRandomData(1000);
+  let frequencies = calculateHistogram(data);
+
+  // uPlot instance
+  const options = {
+    width: 200,
+    height: 100,
+    padding: [0, 0, 0, 0], // Remove all padding
+    scales: {
+        x: { time: false },
+        y: { auto: true }
+    },
+    series: [
+        {}, // X-axis (bin centers) - empty config
+        {
+            label: "", // No legend
+            points: { show: false }, // Hide points
+            stroke: "#1f78b4", // Line color
+            fill: "rgba(31, 120, 180, 0.3)", // Fill under line
+            width: 2
+        }
+    ],
+    axes: [], // No axes
+    legend: { show: false }, // Remove legend
+    grid: { show: false } // Remove grid
+  };
+
+  const chartData = [
+    binCenters,     // X-axis (bin centers)
+    frequencies     // Y-axis (frequencies)
+  ];
+
+  const chart = new uPlot(options, chartData, document.getElementById("chart"));
+
+  // Update function
+  function updateHistogram() {
+    data = generateRandomData(1000);
+    frequencies = calculateHistogram(data);
+    chart.setData([binCenters, frequencies]);
+  }
+
+//   setInterval(updateHistogram, 1000 / 60);
+</script>
