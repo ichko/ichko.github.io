@@ -6,7 +6,12 @@
   <link rel="alternate" type="application/atom+xml" title="Iliya Zhechev's blog" href="/feed.xml">
 
   {%- seo -%}
-  <link rel="stylesheet" href="{{ "/assets/main.css" | relative_url }}">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="{{ "/assets/main.css" | relative_url }}?v={{ site.time | date: '%s' }}">
   {%- feed_meta -%}
   {%- if jekyll.environment == 'production' -%}
   {%- include google-analytics.html -%}
