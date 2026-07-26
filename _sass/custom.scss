@@ -140,3 +140,38 @@
 .text-right {
   text-align: right;
 }
+
+/* smaller nav menu */
+.site-nav .page-link { font-size: 11pt; }
+.site-nav .divider { font-size: 8pt; }
+
+/* headings + masthead use Lora */
+h1, h2, h3, h4, h5, h6,
+.site-header, .site-title {
+  font-family: "Lora", Georgia, "Times New Roman", serif;
+}
+
+/* smaller post-list titles (minima sets these in fixed pt) */
+.post-link { font-size: 1.15rem; }
+.post-list-heading { font-size: 0.8rem; }
+.post-list > li { margin-bottom: 0; padding-bottom: 12px; }
+.post-list > li + li { border-top: 1px solid #e6e6e6; padding-top: 12px; }
+.post-link-subtitle { margin-bottom: 0; margin-top: 2px; font-size: 0.82rem; }
+
+/* title on the left, date on the right */
+.post-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+  margin: 0;
+}
+.post-link-date { white-space: nowrap; text-align: right; }
+
+/* yellow highlight for pinned posts */
+.hl {
+  background: #f6e78c;
+  padding: 0 0.15em;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}

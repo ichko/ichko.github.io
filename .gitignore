@@ -3,6 +3,7 @@ _site
 .jekyll-cache
 .jekyll-metadata
 vendor
+.bundle
 _site
 __pycache__
 .ipynb_checkpoints

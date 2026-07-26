@@ -4,14 +4,18 @@ title: About
 permalink: /about/
 ---
 
-My name is Iliya and I like to program interactive and visual stuff. I have recently
-finished a [Masters in AI](https://github.com/ichko/forward-model) at Sofia University
-and I am currently teaching a course on [Functional Programming](https://github.com/ichko/fmi-fp-2020-21).
+My name is Iliya and I like to build interactive, visual programs. I'm a PhD student at
+Sofia University researching differentiable self-organization, neural cellular automata and
+artificial life, and a Senior Research Engineer at [Redis](https://redis.io/). Earlier I
+finished a [Master's in AI](https://github.com/ichko/forward-model) at Sofia University and
+taught a course on [Functional Programming](https://github.com/ichko/fmi-fp-2020-21).
 
 You can find my resume [here](https://docs.google.com/document/d/1r7JO3kJerb399GzJ2ZE61b5sN2b7zxHt-BYxwwimSTs/edit).
 
 **My interests include**
 
+- Differentiable self-organization
+- Artificial life
 - Generative modeling
 - Recurrent (attention based) models (basically NTMs)
 - AI Art
