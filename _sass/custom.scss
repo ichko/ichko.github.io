@@ -175,3 +175,12 @@ h1, h2, h3, h4, h5, h6,
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
 }
+
+/* red highlight (Redis) */
+.hl-red {
+  background: #d82c20;
+  color: #fff;
+  padding: 0 0.15em;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
