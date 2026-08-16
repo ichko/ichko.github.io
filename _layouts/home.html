@@ -7,12 +7,13 @@ layout: default
   {%- endif -%}
 
   <p>
-    Hi, I'm <a href="/about">Iliya</a> — a <b>PhD student</b> at <span class="hl">Sofia University</span> and a
-    <b>Senior Research Engineer</b> at <span class="hl-red">Redis</span>. I build interactive, visual things and research
+    Hi, I'm <a href="/about">Iliya</a> — a <b>PhD student</b> at <span class="hl">Sofia University</span>, a
+    <b>Senior Research Engineer</b> at <span class="hl-red">Redis</span> and <b>Conference Chair</b> for
+    <a href="https://emergingresearchers.life/" target="_blank" rel="noopener"><span class="hl-green">ERA</span></a>.
+    I build interactive, visual things and research
     how local rules give rise to life-like behaviour. The things I work on most are
     neural cellular automata, self-organizing systems and artificial life. You can also
     read my <a href="https://docs.google.com/document/d/1r7JO3kJerb399GzJ2ZE61b5sN2b7zxHt-BYxwwimSTs/edit" target="_blank" rel="noopener">résumé</a>.
-    I'm also part of <a href="https://emergingresearchers.life/" target="_blank" rel="noopener">ERA</a>.
   </p>
 
   {%- assign date_format = site.minima.date_format | default: "%b %-d, %Y" -%}
@@ -21,30 +22,39 @@ layout: default
   <h2 class="post-list-heading">Posts</h2>
   <ul class="post-list">
     <li>
-      <a class="post-link" href="https://ichko.github.io/nants/" target="_blank" rel="noopener">
-        <h4 class="post-head">
-          <span class="post-link-title">🐜 <span class="hl">Neural Ants (NAnts)</span></span>
-          <span class="post-link-date">2026</span>
-        </h4>
-        <div class="post-link-subtitle">NAnts are to Langton's ant what NCAs are to cellular automata: the rule is learned rather than written by hand.</div>
+      <a class="post-link post-link-pinned" href="https://ichko.github.io/nants/" target="_blank" rel="noopener">
+        <div class="post-emoji" aria-hidden="true">🐜</div>
+        <div class="post-body">
+          <h4 class="post-head">
+            <span class="post-link-title"><span class="hl">Neural Ants (NAnts)</span></span>
+            <span class="post-link-date">2026</span>
+          </h4>
+          <div class="post-link-subtitle">NAnts are to Langton's ant what NCAs are to cellular automata: the rule is learned rather than written by hand.</div>
+        </div>
       </a>
     </li>
     <li>
-      <a class="post-link" href="https://ncpu.pages.dev/" target="_blank" rel="noopener">
-        <h4 class="post-head">
-          <span class="post-link-title">🧮 <span class="hl">Self-organized boolean computation</span></span>
-          <span class="post-link-date">2026</span>
-        </h4>
-        <div class="post-link-subtitle">Neural cellular automata usually grow and repair shapes — this one computes</div>
+      <a class="post-link post-link-pinned" href="https://ncpu.pages.dev/" target="_blank" rel="noopener">
+        <div class="post-emoji" aria-hidden="true">🧮</div>
+        <div class="post-body">
+          <h4 class="post-head">
+            <span class="post-link-title"><span class="hl">Self-organized boolean computation</span></span>
+            <span class="post-link-date">2026</span>
+          </h4>
+          <div class="post-link-subtitle">Neural cellular automata usually grow and repair shapes — this one computes</div>
+        </div>
       </a>
     </li>
     <li>
-      <a class="post-link" href="https://nca-spatial-classification.pages.dev/" target="_blank" rel="noopener">
-        <h4 class="post-head">
-          <span class="post-link-title">🧫 <span class="hl">Embodied Classification with Neural Cellular Automata</span></span>
-          <span class="post-link-date">2025</span>
-        </h4>
-        <div class="post-link-subtitle">An NCA that classifies by routing activation across a grid</div>
+      <a class="post-link post-link-pinned" href="https://nca-spatial-classification.pages.dev/" target="_blank" rel="noopener">
+        <div class="post-emoji" aria-hidden="true">🧫</div>
+        <div class="post-body">
+          <h4 class="post-head">
+            <span class="post-link-title"><span class="hl">Embodied Classification with Neural Cellular Automata</span></span>
+            <span class="post-link-date">2025</span>
+          </h4>
+          <div class="post-link-subtitle">An NCA that classifies by routing activation across a grid</div>
+        </div>
       </a>
     </li>
     {%- for post in live_posts -%}

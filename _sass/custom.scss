@@ -168,9 +168,35 @@ h1, h2, h3, h4, h5, h6,
 }
 .post-link-date { white-space: nowrap; text-align: right; }
 
+/* pinned entries: big emoji on the left, centered against title + subtitle */
+.post-link-pinned {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+.post-emoji {
+  flex: none;
+  font-size: 1.9rem;
+  line-height: 1;
+}
+.post-body { flex: 1; min-width: 0; }
+.post-link:hover .post-link-title {
+  opacity: 0.85;
+  text-decoration: underline;
+}
+
 /* yellow highlight for pinned posts */
 .hl {
   background: #f6e78c;
+  padding: 0 0.15em;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+/* green highlight (ERA) */
+.hl-green {
+  background: #2f7d55;
+  color: #fff;
   padding: 0 0.15em;
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
